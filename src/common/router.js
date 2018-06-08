@@ -86,6 +86,21 @@ export const getRouterData = app => {
       // name: '工作台',
       // authority: 'admin',
     },
+
+    // 权限
+    '/auth/dept': {
+      component: dynamicWrapper(app, ['auth/dept'], () => import('../routes/Auth/Dept')),
+    },
+    /*'/auth/user': {
+      component: dynamicWrapper(app, ['auth/users'], () => import('../routes/Auth/User')),
+    },
+    '/auth/role': {
+      component: dynamicWrapper(app, ['auth/role'], () => import('../routes/Auth/Role')),
+    },
+    '/auth/perm': {
+      component: dynamicWrapper(app, ['auth/permission'], () =>import('../routes/Auth/Permission')),
+    },*/
+
     '/form/basic-form': {
       component: dynamicWrapper(app, ['form'], () => import('../routes/Forms/BasicForm')),
     },

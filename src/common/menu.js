@@ -23,6 +23,29 @@ const menuData = [
     ],
   },
   {
+    name: '权限管理',
+    icon: 'setting',
+    path: 'auth',
+    children: [
+      {
+        name: '部门列表',
+        path: 'dept',
+      },
+      {
+        name: '角色列表',
+        path: 'role',
+      },
+      {
+        name: '用户列表',
+        path: 'user',
+      },
+      {
+        name: '权限列表',
+        path: 'perm',
+      },
+    ],
+  },
+  {
     name: '表单页',
     icon: 'form',
     path: 'form',
