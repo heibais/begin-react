@@ -91,7 +91,7 @@ export const getRouterData = app => {
     '/auth/dept': {
       component: dynamicWrapper(app, ['auth/dept'], () => import('../routes/Auth/Dept')),
     },
-    /*'/auth/user': {
+    '/auth/user': {
       component: dynamicWrapper(app, ['auth/users'], () => import('../routes/Auth/User')),
     },
     '/auth/role': {
@@ -99,7 +99,7 @@ export const getRouterData = app => {
     },
     '/auth/perm': {
       component: dynamicWrapper(app, ['auth/permission'], () =>import('../routes/Auth/Permission')),
-    },*/
+    },
 
     '/form/basic-form': {
       component: dynamicWrapper(app, ['form'], () => import('../routes/Forms/BasicForm')),

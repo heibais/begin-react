@@ -40,7 +40,7 @@ const menuData = [
         path: 'user',
       },
       {
-        name: '权限列表',
+        name: '菜单列表',
         path: 'perm',
       },
     ],
