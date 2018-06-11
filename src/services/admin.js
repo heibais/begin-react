@@ -82,3 +82,23 @@ export async function changeUserPwd(param) {
 export async function saveUserRole(param) {
   return request(`${prefix}/auth/user/${param.userId}/save-role`, { method: 'POST', body: param });
 }
+
+/**
+ * 登录
+ */
+export async function accountLogin(param) {
+  return request(`${prefix}/s/login`, { method: 'POST', body: param });
+}
+export async function accountLogout() {
+  return request(`${prefix}/s/logout`);
+}
+
+/**
+ * 验证码
+ */
+export async function sendEmailCaptcha(sendTo) {
+  return request(`${prefix}/sys/captcha/email?sendTo=${sendTo}`);
+}
+export async function sendMobileCaptcha(sendTo) {
+  return request(`${prefix}/sys/captcha/mobile?sendTo=${sendTo}`);
+}

@@ -83,7 +83,7 @@ export default class ImgUpload extends React.Component {
     return (
       <div>
         <Upload
-          action="/hyb/sys/file"
+          action="/hyb/v1/sys/file"
           listType="picture-card"
           fileList={fileList}
           beforeUpload={this.handleBefore}

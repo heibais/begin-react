@@ -1,7 +1,8 @@
 import { routerRedux } from 'dva/router';
-import { fakeAccountLogin } from '../services/api';
+import { accountLogin, accountLogout } from '../services/admin';
 import { setAuthority } from '../utils/authority';
 import { reloadAuthorized } from '../utils/Authorized';
+import { message } from 'antd';
 
 export default {
   namespace: 'login',
@@ -12,47 +13,26 @@ export default {
 
   effects: {
     *login({ payload }, { call, put }) {
-      const response = yield call(fakeAccountLogin, payload);
-      yield put({
-        type: 'changeLoginStatus',
-        payload: response,
-      });
+      const response = yield call(accountLogin, payload);
       // Login successfully
-      if (response.status === 'ok') {
+      if (response.code === 200) {
+        setAuthority("user");
         reloadAuthorized();
         yield put(routerRedux.push('/'));
+      } else {
+        message.error(response.msg);
       }
     },
-    *logout(_, { put, select }) {
-      try {
-        // get location pathname
-        const urlParams = new URL(window.location.href);
-        const pathname = yield select(state => state.routing.location.pathname);
-        // add the parameters in the url
-        urlParams.searchParams.set('redirect', pathname);
-        window.history.replaceState(null, 'login', urlParams.href);
-      } finally {
-        yield put({
-          type: 'changeLoginStatus',
-          payload: {
-            status: false,
-            currentAuthority: 'guest',
-          },
-        });
+    *logout(_, { call, put }) {
+      const response = yield call(accountLogout);
+      if (response.code === 200) {
+        setAuthority("guest");
         reloadAuthorized();
         yield put(routerRedux.push('/user/login'));
+      } else {
+        return message.error(response.msg);
       }
     },
   },
 
-  reducers: {
-    changeLoginStatus(state, { payload }) {
-      setAuthority(payload.currentAuthority);
-      return {
-        ...state,
-        status: payload.status,
-        type: payload.type,
-      };
-    },
-  },
 };
