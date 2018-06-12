@@ -23,6 +23,21 @@ const menuData = [
     ],
   },
   {
+    name: '微信管理',
+    icon: 'wechat',
+    path: 'wechat',
+    children: [
+      {
+        name: '小程序',
+        path: 'mini',
+      },
+      {
+        name: '公众号',
+        path: 'mp',
+      },
+    ],
+  },
+  {
     name: '权限管理',
     icon: 'setting',
     path: 'auth',

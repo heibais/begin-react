@@ -4,7 +4,6 @@ import { Checkbox, Icon } from 'antd';
 import Login from 'components/Login';
 import styles from './Login.less';
 
-
 const { Tab, UserName, Password, Mobile, Captcha, Submit } = Login;
 
 @connect(({ login, captcha, loading }) => ({
@@ -13,7 +12,6 @@ const { Tab, UserName, Password, Mobile, Captcha, Submit } = Login;
   submitting: loading.effects['login/login'],
 }))
 class LoginPage extends Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -46,7 +44,7 @@ class LoginPage extends Component {
     this.props.dispatch({
       type: 'captcha/sendMobile',
       payload: '18281774033',
-    })
+    });
   };
 
   changeAutoLogin = e => {

@@ -82,6 +82,9 @@ export async function changeUserPwd(param) {
 export async function saveUserRole(param) {
   return request(`${prefix}/auth/user/${param.userId}/save-role`, { method: 'POST', body: param });
 }
+export async function queryCurrent() {
+  return request(`${prefix}/auth/user/current-user`);
+}
 
 /**
  * 登录

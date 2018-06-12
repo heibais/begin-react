@@ -16,7 +16,7 @@ export default {
       const response = yield call(accountLogin, payload);
       // Login successfully
       if (response.code === 200) {
-        setAuthority("user");
+        setAuthority('user');
         reloadAuthorized();
         yield put(routerRedux.push('/'));
       } else {
@@ -26,7 +26,7 @@ export default {
     *logout(_, { call, put }) {
       const response = yield call(accountLogout);
       if (response.code === 200) {
-        setAuthority("guest");
+        setAuthority('guest');
         reloadAuthorized();
         yield put(routerRedux.push('/user/login'));
       } else {
@@ -34,5 +34,4 @@ export default {
       }
     },
   },
-
 };

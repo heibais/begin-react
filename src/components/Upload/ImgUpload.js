@@ -2,7 +2,6 @@ import React from 'react';
 import { Upload, Icon, Modal, message } from 'antd';
 
 export default class ImgUpload extends React.Component {
-
   state = {
     previewVisible: false,
     imageUrl: '',
@@ -12,36 +11,46 @@ export default class ImgUpload extends React.Component {
   componentDidMount() {
     if (this.props.value) {
       this.setState({
-        fileList: [{
-          uid: -1,
-          name: 'xxx.png',
-          status: 'done',
-          url: this.props.value,
-        }],
-      })
+        fileList: [
+          {
+            uid: -1,
+            name: 'xxx.png',
+            status: 'done',
+            url: this.props.value,
+          },
+        ],
+      });
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    if ((nextProps.value && this.state.fileList.length === 0) ||
-      (nextProps.value && this.state.fileList[0].url && this.state.fileList[0].url !== nextProps.value) ||
-      (nextProps.value && this.state.fileList[0].response && this.state.fileList[0].response.msg !== nextProps.value)) {
+    if (
+      (nextProps.value && this.state.fileList.length === 0) ||
+      (nextProps.value &&
+        this.state.fileList[0].url &&
+        this.state.fileList[0].url !== nextProps.value) ||
+      (nextProps.value &&
+        this.state.fileList[0].response &&
+        this.state.fileList[0].response.msg !== nextProps.value)
+    ) {
       this.setState({
-        fileList: [{
-          uid: -1,
-          name: 'xxx.png',
-          status: 'done',
-          url: nextProps.value,
-        }],
-      })
+        fileList: [
+          {
+            uid: -1,
+            name: 'xxx.png',
+            status: 'done',
+            url: nextProps.value,
+          },
+        ],
+      });
     } else if (!nextProps.value) {
       this.setState({
         fileList: [],
-      })
+      });
     }
   }
 
-  handleBefore = (file) => {
+  handleBefore = file => {
     const isLt1M = file.size / 1024 / 1024 < 1;
     if (!isLt1M) {
       message.error('图片上传限制为 1M');
@@ -49,19 +58,19 @@ export default class ImgUpload extends React.Component {
     return isLt1M;
   };
 
-  handleCancel = () => this.setState({
-    previewVisible: false,
-  });
+  handleCancel = () =>
+    this.setState({
+      previewVisible: false,
+    });
 
-  handlePreview = (file) => {
+  handlePreview = file => {
     this.setState({
       imageUrl: file.url || file.thumbUrl,
       previewVisible: true,
     });
   };
 
-
-  handleChange = ( {file, fileList} ) => {
+  handleChange = ({ file, fileList }) => {
     if (file.status === 'done') {
       this.setState({
         imageUrl: file.response.msg,
@@ -76,7 +85,7 @@ export default class ImgUpload extends React.Component {
     const { previewVisible, imageUrl, fileList } = this.state;
     const uploadButton = (
       <div>
-        <Icon style={{fontSize:'32px', color:'#999'}} type='plus' />
+        <Icon style={{ fontSize: '32px', color: '#999' }} type="plus" />
         <div className="ant-upload-text">上传</div>
       </div>
     );

@@ -29,7 +29,7 @@ export default {
       message.success(response.msg);
       if (callback) callback();
     },
-    *changeStatus({ payload }, { call}) {
+    *changeStatus({ payload }, { call }) {
       const response = yield call(changeDeptStatus, payload);
       if (response.code === 500) return message.error(response.msg);
     },

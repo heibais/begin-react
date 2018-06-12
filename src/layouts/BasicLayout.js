@@ -106,7 +106,7 @@ class BasicLayout extends React.PureComponent {
       });
     });
     this.props.dispatch({
-      type: 'user/fetchCurrent',
+      type: 'users/fetchCurrent',
     });
   }
   componentWillUnmount() {
@@ -281,8 +281,8 @@ class BasicLayout extends React.PureComponent {
   }
 }
 
-export default connect(({ user, global, loading }) => ({
-  currentUser: user.currentUser,
+export default connect(({ users, global, loading }) => ({
+  currentUser: users.currentUser,
   collapsed: global.collapsed,
   fetchingNotices: loading.effects['global/fetchNotices'],
   notices: global.notices,

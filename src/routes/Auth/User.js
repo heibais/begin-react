@@ -10,7 +10,7 @@ import {
   Input,
   Radio,
   Select,
-  Avatar
+  Avatar,
 } from 'antd';
 import { connect } from 'dva';
 import StandardTable from '../../components/StandardTable';
@@ -89,8 +89,6 @@ export default class User extends Component {
         this.setState({ allRoles: children });
       },
     });
-
-
   };
 
   handleModalVisible = flag => {
@@ -144,7 +142,7 @@ export default class User extends Component {
     });
   };
   // 表格跳转
-  handleStandardTableChange = (pagination) => {
+  handleStandardTableChange = pagination => {
     const params = {
       page: pagination.current - 1,
       size: pagination.pageSize,
@@ -189,9 +187,7 @@ export default class User extends Component {
         title: '头像',
         dataIndex: 'avatar',
         key: 'avatar',
-        render: val => (
-          val ? <Avatar src={val} /> : <Avatar icon="user" />
-        ),
+        render: val => (val ? <Avatar src={val} /> : <Avatar icon="user" />),
       },
       { title: '用户名', dataIndex: 'username', key: 'usernmae' },
       { title: '昵称', dataIndex: 'nickname', key: 'nickname' },
@@ -278,7 +274,7 @@ export default class User extends Component {
             <FormItem label="头像" {...formItemLayout}>
               {getFieldDecorator('avatar', {
                 initialValue: this.state.currAvatar,
-                getValueFromEvent: (res) => {
+                getValueFromEvent: res => {
                   return res.msg;
                 },
               })(<ImgUpload />)}

@@ -6,6 +6,7 @@ import {
   findSimpleRoleList,
   saveUserRole,
   changeUserPwd,
+  queryCurrent,
 } from '../../services/admin';
 import { message } from 'antd';
 
@@ -15,6 +16,7 @@ export default {
   state: {
     data: [],
     allRoles: [],
+    currentUser: {},
   },
 
   effects: {
@@ -35,19 +37,19 @@ export default {
       });
       if (callback) callback();
     },
-    *save({ payload, callback }, { call}) {
+    *save({ payload, callback }, { call }) {
       const response = yield call(saveUser, payload);
       if (response.code === 500) return message.error(response.msg);
       message.success(response.msg);
       if (callback) callback();
     },
-    *saveRole({ payload, callback }, { call}) {
+    *saveRole({ payload, callback }, { call }) {
       const response = yield call(saveUserRole, payload);
       if (response.code === 500) return message.error(response.msg);
       message.success(response.msg);
       if (callback) callback();
     },
-    *remove({ payload, callback }, { call}) {
+    *remove({ payload, callback }, { call }) {
       const response = yield call(removeUser, payload);
       if (response.code === 500) return message.error(response.msg);
       message.success(response.msg);
@@ -62,6 +64,14 @@ export default {
       if (response.code === 500) return message.error(response.msg);
       message.success(response.msg);
       if (callback) callback();
+    },
+    *fetchCurrent(_, { call, put }) {
+      const response = yield call(queryCurrent);
+      if (response.code === 500) return message.error(response.msg);
+      yield put({
+        type: 'saveCurrentUser',
+        payload: response.data,
+      });
     },
   },
 
@@ -85,6 +95,12 @@ export default {
       return {
         ...state,
         allRoles: action.payload,
+      };
+    },
+    saveCurrentUser(state, action) {
+      return {
+        ...state,
+        currentUser: action.payload,
       };
     },
   },
