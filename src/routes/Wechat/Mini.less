@@ -108,6 +108,44 @@
   }
 }
 
+.stepsContent {
+  :global {
+    .ant-tabs-bar {
+      display: none;
+      margin-top: 10px;
+    }
+  }
+
+  .stepsOne {
+    padding: 20px;
+    .leftSide {
+
+    }
+
+    .rightSide {
+
+    }
+  }
+
+  .stepsTwo {
+    padding: 20px;
+    h4 {
+      margin-top: 20px;
+      font-size: 16px;
+    }
+    .leftSide {
+      text-align: center;
+    }
+
+    .rightSide {
+      text-align: center;
+    }
+  }
+}
+
+
+
+
 .projectList {
   :global {
     .ant-card-meta-description {
@@ -115,6 +153,9 @@
       height: 44px;
       line-height: 22px;
       overflow: hidden;
+    }
+    .ant-card-grid {
+      padding: 10px;
     }
   }
   .cardTitle {
@@ -143,14 +184,10 @@
     height: 20px;
     line-height: 20px;
     .textOverflow();
-    a {
+    span {
       color: @text-color-secondary;
-      display: inline-block;
       flex: 1 1 0;
-      .textOverflow();
-      &:hover {
-        color: @primary-color;
-      }
+      font-size: 10px;
     }
     .datetime {
       color: @disabled-color;
