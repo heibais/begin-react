@@ -38,6 +38,21 @@ const menuData = [
     ],
   },
   {
+    name: '商品管理',
+    icon: 'shopping-cart',
+    path: 'goods',
+    children: [
+      {
+        name: '商品分类',
+        path: 'category',
+      },
+      {
+        name: '商品品牌',
+        path: 'brand',
+      },
+    ],
+  },
+  {
     name: '权限管理',
     icon: 'setting',
     path: 'auth',

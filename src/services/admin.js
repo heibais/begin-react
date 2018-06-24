@@ -105,3 +105,32 @@ export async function sendEmailCaptcha(sendTo) {
 export async function sendMobileCaptcha(sendTo) {
   return request(`${prefix}/sys/captcha/mobile?sendTo=${sendTo}`);
 }
+
+/**
+ * 商品分类
+ */
+export async function findCategoryList(param) {
+  return request(`${prefix}/shop/${param.userId}/category`);
+}
+export async function saveCategory(param) {
+  return request(`${prefix}/shop/${param.userId}/category`, { method: 'POST', body: param });
+}
+export async function removeCategory(param) {
+  return request(`${prefix}/shop/${param.userId}/category/${param.id}`, { method: 'DELETE' });
+}
+export async function changeCategoryStatus(param) {
+  return request(`${prefix}/shop/${param.userId}/category/${param.id}/change-status`);
+}
+export async function changeCategoryRecommend(param) {
+  return request(`${prefix}/shop/${param.userId}/category/${param.id}/change-recommend`);
+}
+
+/**
+ * 品牌分类
+ */
+export async function findBrandList(param) {
+  return request(`${prefix}/shop/${param.userId}/brand?${stringify(param)}`);
+}
+export async function saveBrand(param) {
+  return request(`${prefix}/shop/${param.userId}/brand`, { method: 'POST', body: param });
+}

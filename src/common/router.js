@@ -94,6 +94,14 @@ export const getRouterData = app => {
       component: dynamicWrapper(app, [], () => import('../routes/Wechat/Mini')),
     },
 
+    // 商品
+    '/goods/category': {
+      component: dynamicWrapper(app, ['goods/category'], () => import('../routes/Goods/Category')),
+    },
+    '/goods/brand': {
+      component: dynamicWrapper(app, ['goods/brand'], () => import('../routes/Goods/Brand')),
+    },
+
     // 权限
     '/auth/dept': {
       component: dynamicWrapper(app, ['auth/dept'], () => import('../routes/Auth/Dept')),

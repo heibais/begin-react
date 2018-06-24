@@ -3,6 +3,7 @@ import { accountLogin, accountLogout } from '../services/admin';
 import { setAuthority } from '../utils/authority';
 import { reloadAuthorized } from '../utils/Authorized';
 import { message } from 'antd';
+import {setLoginUser} from "../utils/global";
 
 export default {
   namespace: 'login',
@@ -17,6 +18,7 @@ export default {
       // Login successfully
       if (response.code === 200) {
         setAuthority('user');
+        setLoginUser(JSON.stringify(response.data));
         reloadAuthorized();
         yield put(routerRedux.push('/'));
       } else {
