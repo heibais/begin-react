@@ -50,6 +50,10 @@ const menuData = [
         name: '商品品牌',
         path: 'brand',
       },
+      {
+        name: '商品供应商',
+        path: 'supplier',
+      },
     ],
   },
   {

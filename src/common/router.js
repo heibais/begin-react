@@ -101,6 +101,9 @@ export const getRouterData = app => {
     '/goods/brand': {
       component: dynamicWrapper(app, ['goods/brand'], () => import('../routes/Goods/Brand')),
     },
+    '/goods/supplier': {
+      component: dynamicWrapper(app, ['goods/supplier'], () => import('../routes/Goods/Supplier')),
+    },
 
     // 权限
     '/auth/dept': {

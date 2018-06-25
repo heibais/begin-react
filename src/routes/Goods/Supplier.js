@@ -11,25 +11,20 @@ import {
   Modal,
   Input,
   Radio,
-  Select,
-  Avatar,
-  InputNumber,
 } from 'antd';
 import {connect} from 'dva/index';
 import { getUserId } from '../../utils/global';
-import ImgUpload from '../../components/Upload/ImgUpload';
 
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
-const Option = Select.Option;
 const TextArea = Input.TextArea;
 
-@connect(({ brand, loading }) => ({
-  brand,
-  loading: loading.models.brand,
+@connect(({ supplier, loading }) => ({
+  supplier,
+  loading: loading.models.supplier,
 }))
 @Form.create()
-class Brand extends React.Component {
+class Supplier extends React.Component {
 
   constructor(props) {
     super(props);
@@ -47,7 +42,7 @@ class Brand extends React.Component {
 
   fetchData = params => {
     this.props.dispatch({
-      type: 'brand/fetch',
+      type: 'supplier/fetch',
       payload: params,
     });
   };
@@ -64,11 +59,9 @@ class Brand extends React.Component {
     if (!record) {
       // 新增
       resetFields();
-      this.setState({ currBrandLogo: null });
     } else {
       // 编辑
       setFieldsValue(record);
-      this.setState({ currBrandLogo: record.brandLogo });
     }
     this.handleModalVisible(true);
   };
@@ -77,7 +70,7 @@ class Brand extends React.Component {
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         this.props.dispatch({
-          type: 'brand/save',
+          type: 'supplier/save',
           payload: Object.assign({}, values, {userId: this.state.userId}),
           callback: this.handleSubmitResult,
         });
@@ -93,40 +86,32 @@ class Brand extends React.Component {
   // 删除
   handlerDelete = id => {
     this.props.dispatch({
-      type: 'brand/remove',
+      type: 'supplier/remove',
       payload: {id, userId: this.state.userId},
       callback: this.handleSubmitResult,
     });
   };
-  onChangeShow = record => {
+  onChangeStatus = record => {
     this.props.dispatch({
-      type: 'brand/changeShow',
+      type: 'supplier/changeStatus',
       payload: {id:record.id, userId:this.state.userId},
     });
-    record.show = record.show * -1 + 1;
+    record.status = record.status * -1 + 1;
   };
 
   render() {
     const { getFieldDecorator } = this.props.form;
-    const { brand: { data }, loading } = this.props;
+    const { supplier: { data }, loading } = this.props;
     const columns = [
+      { title: '供应商名称', dataIndex: 'supplierName', key: 'brandName' },
       {
-        title: '品牌logo',
-        dataIndex: 'brandLogo',
-        key: 'brandLogo',
-        render: val => (val ? <Avatar src={val} /> : <Avatar icon="layout" />),
-      },
-      { title: '品牌名称', dataIndex: 'brandName', key: 'brandName' },
-      { title: '品台网址', dataIndex: 'siteUrl', key: 'siteUrl' },
-      {
-        title: '是否显示',
-        dataIndex: 'show',
-        key: 'show',
+        title: '状态',
+        dataIndex: 'status',
+        key: 'status',
         render: (val, record) => (
-          <Switch checked={val ? true : false} onChange={() => this.onChangeShow(record)} />
+          <Switch checked={val ? true : false} onChange={() => this.onChangeStatus(record)} />
         ),
       },
-      { title: '排序', dataIndex: 'sort', key: 'sort' },
       {
         title: '操作',
         key: 'action',
@@ -181,43 +166,24 @@ class Brand extends React.Component {
         >
           <Form>
             {getFieldDecorator('id')(<Input type="hidden" />)}
-            <FormItem label="品牌logo" {...formItemLayout}>
-              {getFieldDecorator('brandLogo', {
-                initialValue: this.state.currBrandLogo,
-                getValueFromEvent: res => {
-                  return res.msg;
-                },
-              })(<ImgUpload />)}
-            </FormItem>
-            <FormItem label="品牌名称" {...formItemLayout}>
-              {getFieldDecorator('brandName', {
-                rules: [{ required: true, message: '请填写品牌名称', whitespace: true }],
+            <FormItem label="供应商名称" {...formItemLayout}>
+              {getFieldDecorator('supplierName', {
+                rules: [{ required: true, message: '请填写供应商名称', whitespace: true }],
               })(<Input autoComplete="off" />)}
             </FormItem>
-            <FormItem label="品牌网址" {...formItemLayout}>
-              {getFieldDecorator('siteUrl', {
-                rules: [{ type: 'url', message: '请填写正确的url', whitespace: true }],
-              })(<Input autoComplete="off" placeholder="http://" />)}
-            </FormItem>
-            <FormItem label="品牌简介" {...formItemLayout}>
-              {getFieldDecorator('brandDesc')(<TextArea autoComplete="off" />)}
+            <FormItem label="供应商简介" {...formItemLayout}>
+              {getFieldDecorator('supplierDesc')(<TextArea autoComplete="off" />)}
             </FormItem>
 
-            <FormItem label="是否显示" {...formItemLayout}>
-              {getFieldDecorator('show', {
-                initialValue: 0,
+            <FormItem label="状态" {...formItemLayout}>
+              {getFieldDecorator('status', {
+                initialValue: 1,
               })(
                 <RadioGroup>
                   <Radio value={1}>是</Radio>
                   <Radio value={0}>否</Radio>
                 </RadioGroup>
               )}
-            </FormItem>
-            <FormItem label="排序" {...formItemLayout}>
-              {getFieldDecorator('sort', {
-                initialValue: 99,
-                rules: [{ required: true, message: '请填写排序数字' }],
-              })(<InputNumber min={1} max={100} />)}
             </FormItem>
           </Form>
         </Modal>
@@ -226,4 +192,4 @@ class Brand extends React.Component {
   }
 }
 
-export default Brand;
+export default Supplier;

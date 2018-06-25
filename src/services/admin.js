@@ -126,11 +126,33 @@ export async function changeCategoryRecommend(param) {
 }
 
 /**
- * 品牌分类
+ * 商品品牌
  */
 export async function findBrandList(param) {
   return request(`${prefix}/shop/${param.userId}/brand?${stringify(param)}`);
 }
 export async function saveBrand(param) {
   return request(`${prefix}/shop/${param.userId}/brand`, { method: 'POST', body: param });
+}
+export async function removeBrand(param) {
+  return request(`${prefix}/shop/${param.userId}/brand/${param.id}`, { method: 'DELETE' });
+}
+export async function changeBrandShow(param) {
+  return request(`${prefix}/shop/${param.userId}/brand/${param.id}/change-show`);
+}
+
+/**
+ * 商品供应商
+ */
+export async function findSupplierList(param) {
+  return request(`${prefix}/shop/${param.userId}/supplier?${stringify(param)}`);
+}
+export async function saveSupplier(param) {
+  return request(`${prefix}/shop/${param.userId}/supplier`, { method: 'POST', body: param });
+}
+export async function removeSupplier(param) {
+  return request(`${prefix}/shop/${param.userId}/supplier/${param.id}`, { method: 'DELETE' });
+}
+export async function changeSupplierStatus(param) {
+  return request(`${prefix}/shop/${param.userId}/supplier/${param.id}/change-status`);
 }

@@ -1,8 +1,8 @@
-import { findBrandList, removeBrand, saveBrand, changeBrandShow } from '../../services/admin';
+import { findSupplierList, removeSupplier, saveSupplier, changeSupplierStatus } from '../../services/admin';
 import { message } from 'antd';
 
 export default {
-  namespace: 'brand',
+  namespace: 'supplier',
 
   state: {
     data: {},
@@ -10,7 +10,7 @@ export default {
 
   effects: {
     *fetch({ payload }, { call, put }) {
-      const response = yield call(findBrandList, payload);
+      const response = yield call(findSupplierList, payload);
       if (response.code === 500) return message.error(response.msg);
       yield put({
         type: 'queryList',
@@ -18,19 +18,19 @@ export default {
       });
     },
     *save({ payload, callback }, { call }) {
-      const response = yield call(saveBrand, payload);
+      const response = yield call(saveSupplier, payload);
       if (response.code === 500) return message.error(response.msg);
       message.success(response.msg);
       if (callback) callback();
     },
     *remove({ payload, callback }, { call }) {
-      const response = yield call(removeBrand, payload);
+      const response = yield call(removeSupplier, payload);
       if (response.code === 500) return message.error(response.msg);
       message.success(response.msg);
       if (callback) callback();
     },
-    *changeShow({ payload }, { call }) {
-      const response = yield call(changeBrandShow, payload);
+    *changeStatus({ payload }, { call }) {
+      const response = yield call(changeSupplierStatus, payload);
       if (response.code === 500) return message.error(response.msg);
     },
   },
