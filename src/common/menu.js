@@ -43,6 +43,10 @@ const menuData = [
     path: 'goods',
     children: [
       {
+        name: '商品列表',
+        path: 'goods',
+      },
+      {
         name: '商品分类',
         path: 'category',
       },

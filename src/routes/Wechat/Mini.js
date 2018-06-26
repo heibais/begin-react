@@ -2,7 +2,23 @@ import React, { PureComponent } from 'react';
 import moment from 'moment';
 import { connect } from 'dva';
 import { Link } from 'dva/router';
-import { Row, Col, Card, List, Avatar, Icon, Button, Badge, Modal, Steps, message, Tabs, Timeline, Form, Input  } from 'antd';
+import {
+  Row,
+  Col,
+  Card,
+  List,
+  Avatar,
+  Icon,
+  Button,
+  Badge,
+  Modal,
+  Steps,
+  message,
+  Tabs,
+  Timeline,
+  Form,
+  Input,
+} from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 
 import styles from './Mini.less';
@@ -32,16 +48,20 @@ const tailFormItemLayout = {
     },
   },
 };
-const steps = [{
-  title: '选择类型',
-  content: 'First-content',
-}, {
-  title: '申请授权',
-  content: 'Second-content',
-}, {
-  title: '提交发布',
-  content: 'Last-content',
-}];
+const steps = [
+  {
+    title: '选择类型',
+    content: 'First-content',
+  },
+  {
+    title: '申请授权',
+    content: 'Second-content',
+  },
+  {
+    title: '提交发布',
+    content: 'Last-content',
+  },
+];
 
 @connect(({ project, activities, chart, loading }) => ({
   project,
@@ -52,13 +72,12 @@ const steps = [{
 }))
 @Form.create()
 export default class Workplace extends PureComponent {
-
   constructor(props) {
     super(props);
     this.state = {
       modalVisible: false,
       currentStep: 0,
-    }
+    };
   }
 
   componentDidMount() {
@@ -116,8 +135,8 @@ export default class Workplace extends PureComponent {
     });
   }
 
-  handleModalVisible = (flag) => {
-    this.setState({modalVisible: flag});
+  handleModalVisible = flag => {
+    this.setState({ modalVisible: flag });
   };
 
   next() {
@@ -134,7 +153,7 @@ export default class Workplace extends PureComponent {
       project: { notice },
       projectLoading,
       activitiesLoading,
-      form: { getFieldDecorator }
+      form: { getFieldDecorator },
     } = this.props;
     const { currentStep } = this.state;
 
@@ -181,7 +200,11 @@ export default class Workplace extends PureComponent {
               style={{ marginBottom: 24 }}
               title="小程序列表"
               bordered={false}
-              extra={<Button icon="plus" type="primary" onClick={() =>this.handleModalVisible(true)}>创建小程序</Button>}
+              extra={
+                <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
+                  创建小程序
+                </Button>
+              }
               loading={projectLoading}
               bodyStyle={{ padding: 0 }}
             >
@@ -190,11 +213,22 @@ export default class Workplace extends PureComponent {
                   <Card
                     bodyStyle={{ padding: 0 }}
                     bordered={false}
-                    cover={<img alt="example" src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png" />}
+                    cover={
+                      <img
+                        alt="example"
+                        src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+                      />
+                    }
                     actions={[
-                      <span><Icon type="area-chart" /> 数据</span>,
-                      <span><Icon type="setting" /> 设置</span>,
-                      <span><Icon type="delete" /> 删除</span>,
+                      <span>
+                        <Icon type="area-chart" /> 数据
+                      </span>,
+                      <span>
+                        <Icon type="setting" /> 设置
+                      </span>,
+                      <span>
+                        <Icon type="delete" /> 删除
+                      </span>,
                     ]}
                   >
                     <Card.Meta
@@ -206,7 +240,9 @@ export default class Workplace extends PureComponent {
                       }
                     />
                     <div className={styles.projectItemContent}>
-                      <span><Badge status="success" text="已上线" /></span>
+                      <span>
+                        <Badge status="success" text="已上线" />
+                      </span>
                       {item.updatedAt && (
                         <span className={styles.datetime} title={item.updatedAt}>
                           2018-06-17 11:00:00
@@ -226,16 +262,12 @@ export default class Workplace extends PureComponent {
             >
               <Row gutter={8}>
                 <Col span={8}>
-                  <Card
-                    bodyStyle={{background: '#ABCDEF'}}
-                    hoverable
-                  >
+                  <Card bodyStyle={{ background: '#ABCDEF' }} hoverable>
                     <p>新手引导</p>
-
                   </Card>
                 </Col>
                 <Col span={8}>
-                  <Card hoverable >
+                  <Card hoverable>
                     <p>如何申请微信小程序账号</p>
                   </Card>
                 </Col>
@@ -273,10 +305,13 @@ export default class Workplace extends PureComponent {
               {steps.map(item => <Step key={item.title} title={item.title} />)}
             </Steps>
             <div className={styles.stepsContent}>
-              <Tabs activeKey={this.state.currentStep.toString()} tabBarStyle={{border: 0, marginBottom: 0}}>
+              <Tabs
+                activeKey={this.state.currentStep.toString()}
+                tabBarStyle={{ border: 0, marginBottom: 0 }}
+              >
                 <TabPane tab="Tab 1" key="0" className={styles.stepsOne}>
                   <Row>
-                    <Col span={18} className={styles.leftSide} >
+                    <Col span={18} className={styles.leftSide}>
                       <Row>
                         <Col span={12}>
                           <h2>线上商城</h2>
@@ -289,97 +324,71 @@ export default class Workplace extends PureComponent {
                             <Timeline.Item>门店展示和基础服务</Timeline.Item>
                           </Timeline>
                         </Col>
-                        <Col span={12}>
-                          图片
-                        </Col>
+                        <Col span={12}>图片</Col>
                       </Row>
                     </Col>
                     <Col span={6} className={styles.rightSide}>
                       <h3>请选择一个小程序的类型</h3>
-                      <p>为了节约审核时间，我们会以如图样式为你提交微信审核。你可以在提交发布后自由修改小程序的样式和功能</p>
-                        <p>
-                          <Button type="primary">线下门店</Button> &nbsp;
-                          <Button>线上商城</Button>
-                        </p>
-                        <p>
-                          <Button>线上商城</Button> &nbsp;
-                          <Button>线上商城</Button>
-                        </p>
+                      <p>
+                        为了节约审核时间，我们会以如图样式为你提交微信审核。你可以在提交发布后自由修改小程序的样式和功能
+                      </p>
+                      <p>
+                        <Button type="primary">线下门店</Button> &nbsp;
+                        <Button>线上商城</Button>
+                      </p>
+                      <p>
+                        <Button>线上商城</Button> &nbsp;
+                        <Button>线上商城</Button>
+                      </p>
                     </Col>
                   </Row>
                 </TabPane>
                 <TabPane tab="Tab 2" key="1" className={styles.stepsTwo}>
                   <Row gutter={16}>
-                    <Col span={12}  style={{textAlign: 'center'}}>
+                    <Col span={12} style={{ textAlign: 'center' }}>
                       <img src="https://s.dodoca.com/applet_mch/images/auth/03.png" />
                       <h4>我已经拥有小程序</h4>
                       <p>小程序管理员可以一键将小程序授权给点点客</p>
                       <Button type="primary">我有小程序，立即授权</Button>
                     </Col>
-                    <Col span={12} style={{textAlign: 'center'}}>
+                    <Col span={12} style={{ textAlign: 'center' }}>
                       <img src="https://s.dodoca.com/applet_mch/images/auth/05.png" />
                       <h4>我还没有小程序</h4>
-                      <p><a href="#">如何申请微信小程序？</a></p>
+                      <p>
+                        <a href="#">如何申请微信小程序？</a>
+                      </p>
                       <Button type="primary">去微信公众平台申请</Button>
                     </Col>
                   </Row>
                 </TabPane>
                 <TabPane tab="Tab 3" key="2">
                   <Row>
-                    <Col span={12}>
-                      图片
-                    </Col>
+                    <Col span={12}>图片</Col>
                     <Col span={12}>
                       <Form>
-                        <FormItem
-                          {...formItemLayout}
-                          label="小程序名称"
-                        >
-                          {getFieldDecorator('email')(
-                            <span>起风了</span>
-                          )}
+                        <FormItem {...formItemLayout} label="小程序名称">
+                          {getFieldDecorator('email')(<span>起风了</span>)}
                         </FormItem>
-                        <FormItem
-                          {...formItemLayout}
-                          label="小程序类型"
-                        >
-                          {getFieldDecorator('email')(
-                            <Input />
-                          )}
+                        <FormItem {...formItemLayout} label="小程序类型">
+                          {getFieldDecorator('email')(<Input />)}
                         </FormItem>
-                        <FormItem
-                          {...formItemLayout}
-                          label="小程序头像"
-                        >
-                          {getFieldDecorator('email')(
-                            <span>起风了</span>
-                          )}
+                        <FormItem {...formItemLayout} label="小程序头像">
+                          {getFieldDecorator('email')(<span>起风了</span>)}
                         </FormItem>
-                        <FormItem
-                          {...formItemLayout}
-                          label="介绍"
-                        >
-                          {getFieldDecorator('email')(
-                            <span>这是一个小程序，具体以后介绍...</span>
-                          )}
+                        <FormItem {...formItemLayout} label="介绍">
+                          {getFieldDecorator('email')(<span>这是一个小程序，具体以后介绍...</span>)}
                         </FormItem>
                         <FormItem {...formItemLayout} label="微信认证">
-                          {getFieldDecorator('email')(
-                            <span>未认证</span>
-                          )}
+                          {getFieldDecorator('email')(<span>未认证</span>)}
                         </FormItem>
                         <FormItem {...formItemLayout} label="服务类目">
-                          {getFieldDecorator('email')(
-                            <Input />
-                          )}
+                          {getFieldDecorator('email')(<Input />)}
                         </FormItem>
                         <FormItem {...formItemLayout} label="小程序标签">
-                          {getFieldDecorator('email')(
-                            <Input />
-                          )}
+                          {getFieldDecorator('email')(<Input />)}
                         </FormItem>
                         <FormItem {...formItemLayout} label="小程序体验码">
-                           二维码
+                          二维码
                         </FormItem>
                         <FormItem {...tailFormItemLayout}>
                           <Button type="primary">发布小程序</Button>
@@ -390,23 +399,26 @@ export default class Workplace extends PureComponent {
                 </TabPane>
               </Tabs>
             </div>
-            <div className="stepsAction" style={{height: '32px'}}>
-              {
-                this.state.currentStep > 0
-                &&
-                <Button style={{ marginLeft: 8 }} onClick={() => this.prev()}>上一步</Button>
-              }
-              {
-                this.state.currentStep < steps.length - 1
-                &&
-                <Button type="primary" style={{float: 'right'}} onClick={() => this.next()}>下一步</Button>
-              }
-              {
-                this.state.currentStep === steps.length - 1
-                &&
-                <Button type="primary" style={{float: 'right'}} onClick={() => message.success('Processing complete!')}>确定</Button>
-              }
-
+            <div className="stepsAction" style={{ height: '32px' }}>
+              {this.state.currentStep > 0 && (
+                <Button style={{ marginLeft: 8 }} onClick={() => this.prev()}>
+                  上一步
+                </Button>
+              )}
+              {this.state.currentStep < steps.length - 1 && (
+                <Button type="primary" style={{ float: 'right' }} onClick={() => this.next()}>
+                  下一步
+                </Button>
+              )}
+              {this.state.currentStep === steps.length - 1 && (
+                <Button
+                  type="primary"
+                  style={{ float: 'right' }}
+                  onClick={() => message.success('Processing complete!')}
+                >
+                  确定
+                </Button>
+              )}
             </div>
           </div>
         </Modal>

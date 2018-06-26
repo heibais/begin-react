@@ -14,7 +14,7 @@ import {
   Popconfirm,
   Radio,
   Select,
-} from "antd";
+} from 'antd';
 import { connect } from 'dva';
 import { getUserId } from '../../utils/global';
 
@@ -27,7 +27,6 @@ const Option = Select.Option;
 }))
 @Form.create()
 class Category extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -38,13 +37,13 @@ class Category extends React.Component {
   }
 
   componentDidMount() {
-      this.fetchData();
+    this.fetchData();
   }
 
   fetchData = () => {
     this.props.dispatch({
       type: 'category/fetch',
-      payload: {userId: this.state.userId},
+      payload: { userId: this.state.userId },
     });
   };
 
@@ -100,7 +99,7 @@ class Category extends React.Component {
   onChangeStatus = record => {
     this.props.dispatch({
       type: 'category/changeStatus',
-      payload: {id:record.id, userId:this.state.userId},
+      payload: { id: record.id, userId: this.state.userId },
     });
     record.status = record.status * -1 + 1;
   };
@@ -108,7 +107,7 @@ class Category extends React.Component {
   onChangeRecommend = record => {
     this.props.dispatch({
       type: 'category/changeRecommend',
-      payload: {id:record.id, userId:this.state.userId},
+      payload: { id: record.id, userId: this.state.userId },
     });
     record.recommend = record.recommend * -1 + 1;
   };
@@ -119,7 +118,7 @@ class Category extends React.Component {
       if (!err) {
         this.props.dispatch({
           type: 'category/save',
-          payload: Object.assign({}, values, {userId: this.state.userId}),
+          payload: Object.assign({}, values, { userId: this.state.userId }),
           callback: this.handleSubmitResult,
         });
       }
@@ -134,7 +133,7 @@ class Category extends React.Component {
   handleDelete = id => {
     this.props.dispatch({
       type: 'category/remove',
-      payload: {id, userId: this.state.userId},
+      payload: { id, userId: this.state.userId },
       callback: this.handleSubmitResult,
     });
   };
@@ -157,7 +156,7 @@ class Category extends React.Component {
         dataIndex: 'recommend',
         key: 'recommend',
         render: (val, record) => (
-          <Switch checked={val? true : false} onChange={() => this.onChangeRecommend(record)} />
+          <Switch checked={val ? true : false} onChange={() => this.onChangeRecommend(record)} />
         ),
       },
       { title: '排序', dataIndex: 'sort', key: 'sort' },

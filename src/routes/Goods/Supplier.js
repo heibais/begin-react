@@ -1,18 +1,8 @@
 import React from 'react';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import StandardTable from '../../components/StandardTable';
-import {
-  Card,
-  Form,
-  Switch,
-  Divider,
-  Popconfirm,
-  Button,
-  Modal,
-  Input,
-  Radio,
-} from 'antd';
-import {connect} from 'dva/index';
+import { Card, Form, Switch, Divider, Popconfirm, Button, Modal, Input, Radio } from 'antd';
+import { connect } from 'dva/index';
 import { getUserId } from '../../utils/global';
 
 const FormItem = Form.Item;
@@ -25,7 +15,6 @@ const TextArea = Input.TextArea;
 }))
 @Form.create()
 class Supplier extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -33,11 +22,11 @@ class Supplier extends React.Component {
       selectedRows: [],
       currBrandLogo: '',
       modalVisible: false,
-    }
+    };
   }
 
   componentDidMount() {
-    this.fetchData({userId: this.state.userId});
+    this.fetchData({ userId: this.state.userId });
   }
 
   fetchData = params => {
@@ -45,6 +34,17 @@ class Supplier extends React.Component {
       type: 'supplier/fetch',
       payload: params,
     });
+  };
+
+  // 表格跳转
+  handleStandardTableChange = pagination => {
+    const params = {
+      current: pagination.current,
+      size: pagination.pageSize,
+      userId: this.state.userId,
+    };
+
+    this.fetchData(params);
   };
 
   handleModalVisible = flag => {
@@ -71,7 +71,7 @@ class Supplier extends React.Component {
       if (!err) {
         this.props.dispatch({
           type: 'supplier/save',
-          payload: Object.assign({}, values, {userId: this.state.userId}),
+          payload: Object.assign({}, values, { userId: this.state.userId }),
           callback: this.handleSubmitResult,
         });
       }
@@ -80,21 +80,21 @@ class Supplier extends React.Component {
   // 增删改成功后的处理
   handleSubmitResult = () => {
     this.handleModalVisible(false);
-    this.fetchData({userId: this.state.userId});
+    this.fetchData({ userId: this.state.userId });
   };
 
   // 删除
   handlerDelete = id => {
     this.props.dispatch({
       type: 'supplier/remove',
-      payload: {id, userId: this.state.userId},
+      payload: { id, userId: this.state.userId },
       callback: this.handleSubmitResult,
     });
   };
   onChangeStatus = record => {
     this.props.dispatch({
       type: 'supplier/changeStatus',
-      payload: {id:record.id, userId:this.state.userId},
+      payload: { id: record.id, userId: this.state.userId },
     });
     record.status = record.status * -1 + 1;
   };
@@ -140,7 +140,7 @@ class Supplier extends React.Component {
         sm: { span: 20 },
       },
     };
-    return(
+    return (
       <PageHeaderLayout>
         <Card bordered={false}>
           <div style={{ marginBottom: '20px' }}>

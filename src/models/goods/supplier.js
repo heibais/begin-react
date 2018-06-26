@@ -1,4 +1,9 @@
-import { findSupplierList, removeSupplier, saveSupplier, changeSupplierStatus } from '../../services/admin';
+import {
+  findSupplierList,
+  removeSupplier,
+  saveSupplier,
+  changeSupplierStatus,
+} from '../../services/admin';
 import { message } from 'antd';
 
 export default {

@@ -11,17 +11,15 @@ import {
   Modal,
   Input,
   Radio,
-  Select,
   Avatar,
   InputNumber,
 } from 'antd';
-import {connect} from 'dva/index';
+import { connect } from 'dva/index';
 import { getUserId } from '../../utils/global';
 import ImgUpload from '../../components/Upload/ImgUpload';
 
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
-const Option = Select.Option;
 const TextArea = Input.TextArea;
 
 @connect(({ brand, loading }) => ({
@@ -30,7 +28,6 @@ const TextArea = Input.TextArea;
 }))
 @Form.create()
 class Brand extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -38,11 +35,11 @@ class Brand extends React.Component {
       selectedRows: [],
       currBrandLogo: '',
       modalVisible: false,
-    }
+    };
   }
 
   componentDidMount() {
-    this.fetchData({userId: this.state.userId});
+    this.fetchData({ userId: this.state.userId });
   }
 
   fetchData = params => {
@@ -50,6 +47,17 @@ class Brand extends React.Component {
       type: 'brand/fetch',
       payload: params,
     });
+  };
+
+  // 表格跳转
+  handleStandardTableChange = pagination => {
+    const params = {
+      current: pagination.current,
+      size: pagination.pageSize,
+      userId: this.state.userId,
+    };
+
+    this.fetchData(params);
   };
 
   handleModalVisible = flag => {
@@ -78,7 +86,7 @@ class Brand extends React.Component {
       if (!err) {
         this.props.dispatch({
           type: 'brand/save',
-          payload: Object.assign({}, values, {userId: this.state.userId}),
+          payload: Object.assign({}, values, { userId: this.state.userId }),
           callback: this.handleSubmitResult,
         });
       }
@@ -87,21 +95,21 @@ class Brand extends React.Component {
   // 增删改成功后的处理
   handleSubmitResult = () => {
     this.handleModalVisible(false);
-    this.fetchData({userId: this.state.userId});
+    this.fetchData({ userId: this.state.userId });
   };
 
   // 删除
   handlerDelete = id => {
     this.props.dispatch({
       type: 'brand/remove',
-      payload: {id, userId: this.state.userId},
+      payload: { id, userId: this.state.userId },
       callback: this.handleSubmitResult,
     });
   };
   onChangeShow = record => {
     this.props.dispatch({
       type: 'brand/changeShow',
-      payload: {id:record.id, userId:this.state.userId},
+      payload: { id: record.id, userId: this.state.userId },
     });
     record.show = record.show * -1 + 1;
   };
@@ -155,7 +163,7 @@ class Brand extends React.Component {
         sm: { span: 20 },
       },
     };
-    return(
+    return (
       <PageHeaderLayout>
         <Card bordered={false}>
           <div style={{ marginBottom: '20px' }}>

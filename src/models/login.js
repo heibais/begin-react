@@ -3,7 +3,7 @@ import { accountLogin, accountLogout } from '../services/admin';
 import { setAuthority } from '../utils/authority';
 import { reloadAuthorized } from '../utils/Authorized';
 import { message } from 'antd';
-import {setLoginUser} from "../utils/global";
+import { setLoginUser } from '../utils/global';
 
 export default {
   namespace: 'login',

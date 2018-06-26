@@ -1,4 +1,3 @@
-
 export function getLoginUser() {
   const userPrincipalStr = localStorage.getItem('begin-user');
   if (userPrincipalStr) {

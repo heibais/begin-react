@@ -95,6 +95,12 @@ export const getRouterData = app => {
     },
 
     // 商品
+    '/goods/goods': {
+      component: dynamicWrapper(app, ['goods/goods'], () => import('../routes/Goods/Goods')),
+    },
+    '/goods/goods-add': {
+      component: dynamicWrapper(app, ['goods/goods'], () => import('../routes/Goods/GoodsAdd')),
+    },
     '/goods/category': {
       component: dynamicWrapper(app, ['goods/category'], () => import('../routes/Goods/Category')),
     },

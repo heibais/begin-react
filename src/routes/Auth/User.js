@@ -144,7 +144,7 @@ export default class User extends Component {
   // 表格跳转
   handleStandardTableChange = pagination => {
     const params = {
-      page: pagination.current - 1,
+      current: pagination.current,
       size: pagination.pageSize,
     };
 

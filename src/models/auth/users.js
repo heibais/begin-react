@@ -79,11 +79,11 @@ export default {
     queryList(state, action) {
       const result = action.payload;
       const data = {
-        list: result.content,
+        list: result.records,
         pagination: {
-          total: result.totalElements,
+          total: result.total,
           pageSize: result.size,
-          current: parseInt(result.number + 1, 10) || 1,
+          current: result.current,
         },
       };
       return {

@@ -1,4 +1,10 @@
-import { findCategoryList, removeCategory, saveCategory, changeCategoryStatus, changeCategoryRecommend } from '../../services/admin';
+import {
+  findCategoryList,
+  removeCategory,
+  saveCategory,
+  changeCategoryStatus,
+  changeCategoryRecommend,
+} from '../../services/admin';
 import { message } from 'antd';
 
 export default {
