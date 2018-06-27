@@ -131,6 +131,9 @@ export async function changeCategoryRecommend(param) {
 export async function findBrandList(param) {
   return request(`${prefix}/shop/${param.userId}/brand?${stringify(param)}`);
 }
+export async function findBrandListNoPage(param) {
+  return request(`${prefix}/shop/${param.userId}/brand/no-page`);
+}
 export async function saveBrand(param) {
   return request(`${prefix}/shop/${param.userId}/brand`, { method: 'POST', body: param });
 }
@@ -146,6 +149,9 @@ export async function changeBrandShow(param) {
  */
 export async function findSupplierList(param) {
   return request(`${prefix}/shop/${param.userId}/supplier?${stringify(param)}`);
+}
+export async function findSupplierListNoPage(param) {
+  return request(`${prefix}/shop/${param.userId}/supplier/no-page`);
 }
 export async function saveSupplier(param) {
   return request(`${prefix}/shop/${param.userId}/supplier`, { method: 'POST', body: param });

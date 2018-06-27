@@ -1,6 +1,4 @@
 import React from 'react';
-import PageHeaderLayout from '../../layouts/PageHeaderLayout';
-import { getUserId } from '../../utils/global';
 import { connect } from 'dva/index';
 import { routerRedux } from 'dva/router';
 import {
@@ -14,8 +12,14 @@ import {
   Select,
   Checkbox,
   Switch,
+  TreeSelect,
+  Upload,
+  Icon,
+  message,
 } from 'antd';
 import LzEditor from 'react-lz-editor';
+import PageHeaderLayout from '../../layouts/PageHeaderLayout';
+import { getUserId } from '../../utils/global';
 import ImgUpload from '../../components/Upload/ImgUpload';
 
 const RangePicker = DatePicker.RangePicker;
@@ -24,6 +28,8 @@ const Option = Select.Option;
 const CheckboxGroup = Checkbox.Group;
 const TextArea = Input.TextArea;
 const TabPane = Tabs.TabPane;
+const Dragger = Upload.Dragger;
+
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -46,14 +52,56 @@ class GoodsAdd extends React.Component {
       userId: getUserId(),
       markdownContent: '## HEAD 2 \n markdown examples \n ``` welcome ```',
       isPromote: false,
+      categoryTreeData: [],
     };
   }
 
-  receiveHtml(content) {
+  componentDidMount() {
+    // 查询分类列表
+    this.props.dispatch({
+      type: 'goods/fetchCategory',
+      payload: {userId: this.state.userId},
+      callback: this.formatTreeSelect,
+    });
+    // 查询品牌列表
+    this.props.dispatch({
+      type: 'goods/fetchBrand',
+      payload: {userId: this.state.userId},
+    });
+    // 查询供应商列表
+    this.props.dispatch({
+      type: 'goods/fetchSupplier',
+      payload: {userId: this.state.userId},
+    });
+  }
+
+  formatTreeSelect = () => {
+    let data = this.props.goods.categoryList;
+    function format(data) {
+      let treeData = [];
+      data.map((item, index) => {
+        if (item.status === 0) return false;
+        const obj = {};
+        obj.label = item.name;
+        obj.value = item.id.toString();
+        obj.key = item.key.toString();
+        if (item.children) {
+          obj.children = format(item.children);
+        }
+        treeData[index] = obj;
+      });
+      return treeData;
+    }
+    const categoryTreeData = format(data);
+    this.setState({ categoryTreeData });
+  };
+
+  receiveHtml = (content) => {
     console.log('Recieved content', content);
   }
   render() {
     const { getFieldDecorator } = this.props.form;
+    const { goods: { brandList, supplierList }, loading } = this.props;
     const operations = (
       <div>
         <Button
@@ -78,9 +126,25 @@ class GoodsAdd extends React.Component {
       { label: '新品', value: 'ifNew' },
       { label: '热销', value: 'ifHot' },
     ];
+    const uploadProps = {
+      name: 'file',
+      multiple: true,
+      action: '//jsonplaceholder.typicode.com/posts/',
+      onChange(info) {
+        const status = info.file.status;
+        if (status !== 'uploading') {
+          console.log(info.file, info.fileList);
+        }
+        if (status === 'done') {
+          message.success(`${info.file.name} file uploaded successfully.`);
+        } else if (status === 'error') {
+          message.error(`${info.file.name} file upload failed.`);
+        }
+      },
+    };
     return (
       <PageHeaderLayout>
-        <Card bordered={false}>
+        <Card bordered={false} loading={loading}>
           <Form>
             <Tabs tabBarExtraContent={operations}>
               <TabPane tab="通用信息" key="1">
@@ -109,20 +173,16 @@ class GoodsAdd extends React.Component {
                 <FormItem label="商品分类" {...formItemLayout}>
                   {getFieldDecorator('categoryId', {
                     rules: [{ required: true, message: '请选择商品分类' }],
-                  })(
-                    <Select placeholder="请选择商品分类">
-                      <Option value="china">China</Option>
-                      <Option value="use">U.S.A</Option>
-                    </Select>
-                  )}
+                  })(<TreeSelect treeData={this.state.categoryTreeData} />)}
                 </FormItem>
                 <FormItem label="商品品牌" {...formItemLayout}>
                   {getFieldDecorator('brandId', {
                     rules: [{ required: true, message: '请选择商品品牌' }],
                   })(
                     <Select placeholder="请选择商品品牌">
-                      <Option value="china">China</Option>
-                      <Option value="use">U.S.A</Option>
+                      {brandList && brandList.map((item, index) => {
+                        return <Option key={`brand${index}`} value={item.id}>{item.brandName}</Option>
+                      })}
                     </Select>
                   )}
                 </FormItem>
@@ -131,8 +191,10 @@ class GoodsAdd extends React.Component {
                     rules: [{ required: true, message: '请选择商品供应商' }],
                   })(
                     <Select placeholder="请选择商品供应商">
-                      <Option value="china">China</Option>
-                      <Option value="use">U.S.A</Option>
+                      <Option value={0}>自身供货</Option>
+                      {supplierList && supplierList.map((item, index) => {
+                        return <Option key={`supplier${index}`} value={item.id}>{item.supplierName}</Option>
+                      })}
                     </Select>
                   )}
                 </FormItem>
@@ -211,16 +273,18 @@ class GoodsAdd extends React.Component {
                 <FormItem label="上架" {...formItemLayout}>
                   {getFieldDecorator('ifOnSale', {
                     valuePropName: 'checked',
+                    initialValue: true,
                   })(<Switch />)}
                 </FormItem>
                 <FormItem label="是否免运费" {...formItemLayout}>
                   {getFieldDecorator('noFreight', {
                     valuePropName: 'checked',
+                    initialValue: true,
                   })(<Switch />)}
                 </FormItem>
                 <FormItem label="商品关键字" {...formItemLayout}>
                   {getFieldDecorator('keyWords')(
-                    <Select mode="tags" style={{ width: '100%' }} placeholder="请输入关键字" />
+                    <Select mode="tags" placeholder="请输入关键字" />
                   )}
                 </FormItem>
                 <FormItem label="商品简单描述" {...formItemLayout}>
@@ -230,11 +294,14 @@ class GoodsAdd extends React.Component {
                   {getFieldDecorator('ownerRemark')(<TextArea />)}
                 </FormItem>
               </TabPane>
-              <TabPane tab="商品属性" key="4">
-                Content of tab 3
-              </TabPane>
-              <TabPane tab="商品相册" key="5">
-                Content of tab 3
+              <TabPane tab="商品相册" key="4">
+                <Dragger {...uploadProps}>
+                  <p className="ant-upload-drag-icon">
+                    <Icon type="inbox" />
+                  </p>
+                  <p className="ant-upload-text">Click or drag file to this area to upload</p>
+                  <p className="ant-upload-hint">Support for a single or bulk upload. Strictly prohibit from uploading company data or other band files</p>
+                </Dragger>
               </TabPane>
             </Tabs>
           </Form>
