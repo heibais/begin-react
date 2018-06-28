@@ -13,14 +13,12 @@ import {
   Checkbox,
   Switch,
   TreeSelect,
-  Upload,
-  Icon,
-  message,
 } from 'antd';
 import LzEditor from 'react-lz-editor';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import { getUserId } from '../../utils/global';
 import ImgUpload from '../../components/Upload/ImgUpload';
+import ImgUploads from '../../components/Upload/ImgUploads';
 
 const RangePicker = DatePicker.RangePicker;
 const FormItem = Form.Item;
@@ -28,7 +26,6 @@ const Option = Select.Option;
 const CheckboxGroup = Checkbox.Group;
 const TextArea = Input.TextArea;
 const TabPane = Tabs.TabPane;
-const Dragger = Upload.Dragger;
 
 const formItemLayout = {
   labelCol: {
@@ -60,18 +57,18 @@ class GoodsAdd extends React.Component {
     // 查询分类列表
     this.props.dispatch({
       type: 'goods/fetchCategory',
-      payload: {userId: this.state.userId},
+      payload: { userId: this.state.userId },
       callback: this.formatTreeSelect,
     });
     // 查询品牌列表
     this.props.dispatch({
       type: 'goods/fetchBrand',
-      payload: {userId: this.state.userId},
+      payload: { userId: this.state.userId },
     });
     // 查询供应商列表
     this.props.dispatch({
       type: 'goods/fetchSupplier',
-      payload: {userId: this.state.userId},
+      payload: { userId: this.state.userId },
     });
   }
 
@@ -96,9 +93,17 @@ class GoodsAdd extends React.Component {
     this.setState({ categoryTreeData });
   };
 
-  receiveHtml = (content) => {
+  receiveHtml = content => {
     console.log('Recieved content', content);
-  }
+  };
+
+  handleSubmit = () => {
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        console.log('Received values of form: ', values);
+      }
+    });
+  };
   render() {
     const { getFieldDecorator } = this.props.form;
     const { goods: { brandList, supplierList }, loading } = this.props;
@@ -110,9 +115,11 @@ class GoodsAdd extends React.Component {
           onClick={() => this.props.dispatch(routerRedux.push('goods'))}
         >
           返回列表
-        </Button>{' '}
+        </Button>
         &nbsp;
-        <Button type="primary">确定</Button>
+        <Button type="primary" onClick={this.handleSubmit}>
+          确定
+        </Button>
       </div>
     );
     const selectUnitAfter = (
@@ -126,22 +133,6 @@ class GoodsAdd extends React.Component {
       { label: '新品', value: 'ifNew' },
       { label: '热销', value: 'ifHot' },
     ];
-    const uploadProps = {
-      name: 'file',
-      multiple: true,
-      action: '//jsonplaceholder.typicode.com/posts/',
-      onChange(info) {
-        const status = info.file.status;
-        if (status !== 'uploading') {
-          console.log(info.file, info.fileList);
-        }
-        if (status === 'done') {
-          message.success(`${info.file.name} file uploaded successfully.`);
-        } else if (status === 'error') {
-          message.error(`${info.file.name} file upload failed.`);
-        }
-      },
-    };
     return (
       <PageHeaderLayout>
         <Card bordered={false} loading={loading}>
@@ -180,9 +171,14 @@ class GoodsAdd extends React.Component {
                     rules: [{ required: true, message: '请选择商品品牌' }],
                   })(
                     <Select placeholder="请选择商品品牌">
-                      {brandList && brandList.map((item, index) => {
-                        return <Option key={`brand${index}`} value={item.id}>{item.brandName}</Option>
-                      })}
+                      {brandList &&
+                        brandList.map((item, index) => {
+                          return (
+                            <Option key={`brand${index}`} value={item.id}>
+                              {item.brandName}
+                            </Option>
+                          );
+                        })}
                     </Select>
                   )}
                 </FormItem>
@@ -192,9 +188,14 @@ class GoodsAdd extends React.Component {
                   })(
                     <Select placeholder="请选择商品供应商">
                       <Option value={0}>自身供货</Option>
-                      {supplierList && supplierList.map((item, index) => {
-                        return <Option key={`supplier${index}`} value={item.id}>{item.supplierName}</Option>
-                      })}
+                      {supplierList &&
+                        supplierList.map((item, index) => {
+                          return (
+                            <Option key={`supplier${index}`} value={item.id}>
+                              {item.supplierName}
+                            </Option>
+                          );
+                        })}
                     </Select>
                   )}
                 </FormItem>
@@ -283,9 +284,7 @@ class GoodsAdd extends React.Component {
                   })(<Switch />)}
                 </FormItem>
                 <FormItem label="商品关键字" {...formItemLayout}>
-                  {getFieldDecorator('keyWords')(
-                    <Select mode="tags" placeholder="请输入关键字" />
-                  )}
+                  {getFieldDecorator('keyWords')(<Select mode="tags" placeholder="请输入关键字" />)}
                 </FormItem>
                 <FormItem label="商品简单描述" {...formItemLayout}>
                   {getFieldDecorator('goodsBrief')(<TextArea />)}
@@ -295,13 +294,11 @@ class GoodsAdd extends React.Component {
                 </FormItem>
               </TabPane>
               <TabPane tab="商品相册" key="4">
-                <Dragger {...uploadProps}>
-                  <p className="ant-upload-drag-icon">
-                    <Icon type="inbox" />
-                  </p>
-                  <p className="ant-upload-text">Click or drag file to this area to upload</p>
-                  <p className="ant-upload-hint">Support for a single or bulk upload. Strictly prohibit from uploading company data or other band files</p>
-                </Dragger>
+                {getFieldDecorator('goodsBatchImg', {
+                  getValueFromEvent: res => {
+                    return res;
+                  },
+                })(<ImgUploads />)}
               </TabPane>
             </Tabs>
           </Form>
