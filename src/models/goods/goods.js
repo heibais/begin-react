@@ -1,5 +1,9 @@
-import {message} from "antd/lib/index";
-import {findBrandListNoPage, findCategoryList, findSupplierListNoPage} from "../../services/admin";
+import { message } from 'antd/lib/index';
+import {
+  findBrandListNoPage,
+  findCategoryList,
+  findSupplierListNoPage,
+} from '../../services/admin';
 
 export default {
   namespace: 'goods',

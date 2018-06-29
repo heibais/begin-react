@@ -94,13 +94,27 @@ class GoodsAdd extends React.Component {
   };
 
   receiveHtml = content => {
-    console.log('Recieved content', content);
+    this.props.setFieldsValue({ goodsDesc: content });
   };
 
   handleSubmit = () => {
     this.props.form.validateFields((err, values) => {
       if (!err) {
+        const data = {};
+        const { ifPromote, recommend } = values;
+        if (recommend && recommend.length > 0) {
+          recommend.forEach(item => (values[item] = 1));
+        }
+        if (ifPromote) {
+          const promoteTime = {
+            promoteStartTime: values.promoteTime[0].format('YYYY-MM-DD HH:mm:ss'),
+            promoteEndTime: values.promoteTime[1].format('YYYY-MM-DD HH:mm:ss'),
+          };
+          Object.assign(data, values, promoteTime);
+        }
+
         console.log('Received values of form: ', values);
+        console.log('Received values of form: ', data);
       }
     });
   };
@@ -140,6 +154,7 @@ class GoodsAdd extends React.Component {
             <Tabs tabBarExtraContent={operations}>
               <TabPane tab="通用信息" key="1">
                 {getFieldDecorator('id')(<Input type="hidden" />)}
+                {getFieldDecorator('goodsDesc')(<Input type="hidden" />)}
                 <FormItem label="商品名称" {...formItemLayout}>
                   {getFieldDecorator('goodsName', {
                     rules: [{ required: true, message: '请填写商品名称', whitespace: true }],
@@ -228,9 +243,9 @@ class GoodsAdd extends React.Component {
                       <span className="ant-form-text"> 元</span>
                     </FormItem>
                     <FormItem label="促销日期" {...formItemLayout}>
-                      {getFieldDecorator('promoteDate', {
+                      {getFieldDecorator('promoteTime', {
                         rules: [{ required: true, message: '请选择促销日期' }],
-                      })(<RangePicker />)}
+                      })(<RangePicker showTime format="YYYY-MM-DD HH:mm:ss" />)}
                     </FormItem>
                   </div>
                 ) : (
@@ -284,7 +299,9 @@ class GoodsAdd extends React.Component {
                   })(<Switch />)}
                 </FormItem>
                 <FormItem label="商品关键字" {...formItemLayout}>
-                  {getFieldDecorator('keyWords')(<Select mode="tags" placeholder="请输入关键字" />)}
+                  {getFieldDecorator('keyWords')(
+                    <Input placeholder="请输入关键字, 使用英文逗号分隔" />
+                  )}
                 </FormItem>
                 <FormItem label="商品简单描述" {...formItemLayout}>
                   {getFieldDecorator('goodsBrief')(<TextArea />)}

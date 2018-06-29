@@ -78,8 +78,10 @@ export default class ImgUploads extends React.Component {
     this.setState({ fileList });
     if (file.status === 'done') {
       const imgUrls = [];
-      fileList.map(item => {
-        imgUrls.push(item.response.msg);
+      fileList.forEach(item => {
+        if (item.response && !imgUrls.includes(item.response.msg)) {
+          imgUrls.push(item.response.msg);
+        }
       });
       this.props.onChange(imgUrls);
     }
@@ -90,6 +92,7 @@ export default class ImgUploads extends React.Component {
     return (
       <div className={styles.imgUploads}>
         <Dragger
+          multiple={true}
           action="/hyb/v1/sys/file"
           listType="picture-card"
           fileList={fileList}
