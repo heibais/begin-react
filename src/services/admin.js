@@ -162,3 +162,13 @@ export async function removeSupplier(param) {
 export async function changeSupplierStatus(param) {
   return request(`${prefix}/shop/${param.userId}/supplier/${param.id}/change-status`);
 }
+
+/**
+ * 商品
+ */
+export async function findGoodsList(param) {
+  return request(`${prefix}/shop/${param.userId}/goods?${stringify(param)}`);
+}
+export async function saveGoods(param) {
+  return request(`${prefix}/shop/${param.userId}/goods`, { method: 'POST', body: param });
+}

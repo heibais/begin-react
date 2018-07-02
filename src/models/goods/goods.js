@@ -3,6 +3,7 @@ import {
   findBrandListNoPage,
   findCategoryList,
   findSupplierListNoPage,
+  saveGoods,
 } from '../../services/admin';
 
 export default {
@@ -40,6 +41,12 @@ export default {
         type: 'querySupplier',
         payload: response.data,
       });
+    },
+    *save({ payload, callback }, { call }) {
+      const response = yield call(saveGoods, payload);
+      if (response.code === 500) return message.error(response.msg);
+      message.success(response.msg);
+      //if (callback) callback();
     },
   },
 

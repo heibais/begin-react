@@ -50,6 +50,7 @@ class GoodsAdd extends React.Component {
       markdownContent: '## HEAD 2 \n markdown examples \n ``` welcome ```',
       isPromote: false,
       categoryTreeData: [],
+      weightUnit: 'KG',
     };
   }
 
@@ -94,27 +95,33 @@ class GoodsAdd extends React.Component {
   };
 
   receiveHtml = content => {
-    this.props.setFieldsValue({ goodsDesc: content });
+    this.props.form.setFieldsValue({ goodsDesc: content });
+  };
+
+  handleChangeWeightUnit = (target) => {
+    this.setState({weightUnit: target});
   };
 
   handleSubmit = () => {
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        const data = {};
+        values.goodsWeightUnit = this.state.weightUnit;
+        values.userId = this.state.userId;
+
         const { ifPromote, recommend } = values;
         if (recommend && recommend.length > 0) {
-          recommend.forEach(item => (values[item] = 1));
+          recommend.forEach(item => (values[item] = true));
         }
         if (ifPromote) {
-          const promoteTime = {
-            promoteStartTime: values.promoteTime[0].format('YYYY-MM-DD HH:mm:ss'),
-            promoteEndTime: values.promoteTime[1].format('YYYY-MM-DD HH:mm:ss'),
-          };
-          Object.assign(data, values, promoteTime);
+            values.promoteStartTime = values.promoteTime[0].format('YYYY-MM-DD HH:mm:ss');
+            values.promoteEndTime = values.promoteTime[1].format('YYYY-MM-DD HH:mm:ss');
         }
-
         console.log('Received values of form: ', values);
-        console.log('Received values of form: ', data);
+        this.props.dispatch({
+          type: 'goods/save',
+          payload: values,
+        });
+        //callback: this.handleSubmitResult,
       }
     });
   };
@@ -137,7 +144,7 @@ class GoodsAdd extends React.Component {
       </div>
     );
     const selectUnitAfter = (
-      <Select defaultValue="KG" style={{ width: 80 }}>
+      <Select value={this.state.weightUnit} onChange={(target) => this.handleChangeWeightUnit(target)} style={{ width: 80 }}>
         <Option value="KG">千克</Option>
         <Option value="G">克</Option>
       </Select>
@@ -149,7 +156,7 @@ class GoodsAdd extends React.Component {
     ];
     return (
       <PageHeaderLayout>
-        <Card bordered={false} loading={loading}>
+        <Card bordered={false}>
           <Form>
             <Tabs tabBarExtraContent={operations}>
               <TabPane tab="通用信息" key="1">
@@ -215,7 +222,7 @@ class GoodsAdd extends React.Component {
                   )}
                 </FormItem>
                 <FormItem label="本店售价" {...formItemLayout}>
-                  {getFieldDecorator('goodsPrice', {
+                  {getFieldDecorator('shopPrice', {
                     rules: [{ required: true, message: '请填写本店售价' }],
                     initialValue: 0.0,
                   })(<InputNumber min={0} precision={2} />)}
