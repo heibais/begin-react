@@ -2,7 +2,7 @@ import React from 'react';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import StandardTable from '../../components/StandardTable';
 import { routerRedux } from 'dva/router';
-import { Card, Form, Switch, Divider, Popconfirm, Button } from 'antd';
+import { Card, Switch, Divider, Popconfirm, Button } from 'antd';
 import { connect } from 'dva/index';
 import { getUserId } from '../../utils/global';
 
@@ -10,7 +10,7 @@ import { getUserId } from '../../utils/global';
   goods,
   loading: loading.models.goods,
 }))
-@Form.create()
+
 class Goods extends React.Component {
   constructor(props) {
     super(props);
@@ -20,19 +20,38 @@ class Goods extends React.Component {
     };
   }
 
+  componentDidMount() {
+    this.fetchData();
+  };
+
+  fetchData = (params) => {
+    this.props.dispatch({
+      type: 'goods/fetch',
+      payload: Object.assign({}, {userId: this.state.userId}, params),
+    });
+  };
+
+  handleChangeStatus = (record, statusEnum) => {
+    this.props.dispatch({
+      type: 'goods/changeStatus',
+      payload: { id: record.id, userId: this.state.userId, statusEnum },
+      callback: this.fetchData
+    });
+
+  };
+
   render() {
-    const { getFieldDecorator } = this.props.form;
     const { goods: { data }, loading } = this.props;
     const columns = [
       { title: '商品名称', dataIndex: 'goodsName', key: 'goodsName' },
       { title: '货号', dataIndex: 'goodsSn', key: 'goodsSn' },
-      { title: '价格', dataIndex: 'goodsPrice', key: 'goodsPrice' },
+      { title: '价格', dataIndex: 'shopPrice', key: 'shopPrice' },
       {
         title: '上架',
         dataIndex: 'ifOnSale',
         key: 'ifOnSale',
         render: (val, record) => (
-          <Switch checked={val ? true : false} onChange={() => this.onChangeShow(record)} />
+          <Switch checked={val} onChange={() => this.handleChangeStatus(record, 'ONSALE')} />
         ),
       },
       {
@@ -40,7 +59,7 @@ class Goods extends React.Component {
         dataIndex: 'ifBest',
         key: 'ifBest',
         render: (val, record) => (
-          <Switch checked={val ? true : false} onChange={() => this.onChangeShow(record)} />
+          <Switch checked={val} onChange={() => this.handleChangeStatus(record, 'BEST')} />
         ),
       },
       {
@@ -48,7 +67,7 @@ class Goods extends React.Component {
         dataIndex: 'ifNew',
         key: 'ifNew',
         render: (val, record) => (
-          <Switch checked={val ? true : false} onChange={() => this.onChangeShow(record)} />
+          <Switch checked={val} onChange={() => this.handleChangeStatus(record, 'NEW')} />
         ),
       },
       {
@@ -56,7 +75,7 @@ class Goods extends React.Component {
         dataIndex: 'ifHot',
         key: 'ifHot',
         render: (val, record) => (
-          <Switch checked={val ? true : false} onChange={() => this.onChangeShow(record)} />
+          <Switch checked={val} onChange={() => this.handleChangeStatus(record, 'HOT')} />
         ),
       },
       { title: '排序', dataIndex: 'sort', key: 'sort' },
@@ -66,11 +85,11 @@ class Goods extends React.Component {
         key: 'action',
         render: (text, record) => (
           <span>
-            <Button size="small" onClick={() => this.handleAddOrEdit(record)}>
+            <Button size="small" onClick={() => this.props.dispatch(routerRedux.push(`goods-edit/${record.id}`))}>
               编辑
             </Button>
             <Divider type="vertical" />
-            <Popconfirm title="你确定要删除吗？" onConfirm={() => this.handlerDelete(record.id)}>
+            <Popconfirm title="你确定要删除吗？" onConfirm={() => this.handleChangeStatus(record, 'DELETE')}>
               <Button type="danger" size="small">
                 删除
               </Button>

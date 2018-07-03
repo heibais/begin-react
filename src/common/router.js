@@ -101,6 +101,9 @@ export const getRouterData = app => {
     '/goods/goods-add': {
       component: dynamicWrapper(app, ['goods/goods'], () => import('../routes/Goods/GoodsAdd')),
     },
+    '/goods/goods-edit/:goodsId': {
+      component: dynamicWrapper(app, ['goods/goods'], () => import('../routes/Goods/GoodsEdit')),
+    },
     '/goods/category': {
       component: dynamicWrapper(app, ['goods/category'], () => import('../routes/Goods/Category')),
     },

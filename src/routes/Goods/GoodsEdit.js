@@ -47,7 +47,7 @@ class GoodsAdd extends React.Component {
     super(props);
     this.state = {
       userId: getUserId(),
-      markdownContent: '## HEAD 2 \n markdown examples \n ``` welcome ```',
+      markdownContent: '',
       isPromote: false,
       categoryTreeData: [],
       weightUnit: 'KG',
@@ -55,6 +55,19 @@ class GoodsAdd extends React.Component {
   }
 
   componentDidMount() {
+    console.log(this.props);
+    const goodsId = this.props.match.params.goodsId;
+    // 查询商品详情
+    if (goodsId) {
+      this.props.dispatch({
+        type: 'goods/fetchOne',
+        payload: { userId: this.state.userId, id:goodsId},
+        callback: () => {
+          const { goods: { goods }, form } = this.props;
+          form.setFieldsValue(goods);
+        }
+      });
+    }
     // 查询分类列表
     this.props.dispatch({
       type: 'goods/fetchCategory',
@@ -135,7 +148,7 @@ class GoodsAdd extends React.Component {
         <Button
           type="default"
           icon="rollback"
-          onClick={() => this.props.dispatch(routerRedux.push('goods'))}
+          onClick={() => this.props.dispatch(routerRedux.push('/goods/goods'))}
         >
           返回列表
         </Button>

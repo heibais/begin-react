@@ -169,6 +169,15 @@ export async function changeSupplierStatus(param) {
 export async function findGoodsList(param) {
   return request(`${prefix}/shop/${param.userId}/goods?${stringify(param)}`);
 }
+export async function findGoodsOne(param) {
+  return request(`${prefix}/shop/${param.userId}/goods/${param.id}`);
+}
 export async function saveGoods(param) {
   return request(`${prefix}/shop/${param.userId}/goods`, { method: 'POST', body: param });
+}
+export async function removeGoods(param) {
+  return request(`${prefix}/shop/${param.userId}/goods/${param.id}`, { method: 'DELETE' });
+}
+export async function changeGoodsStatus(param) {
+  return request(`${prefix}/shop/${param.userId}/goods/${param.id}/change-status?statusEnum=${param.statusEnum}`);
 }

@@ -189,7 +189,7 @@ class Category extends React.Component {
     };
     return (
       <PageHeaderLayout>
-        <Card title="权限列表" bordered={false}>
+        <Card title="商品分类" bordered={false}>
           <Button
             icon="plus"
             type="primary"
