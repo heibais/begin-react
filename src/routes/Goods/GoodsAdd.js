@@ -112,16 +112,16 @@ class GoodsAdd extends React.Component {
         if (recommend && recommend.length > 0) {
           recommend.forEach(item => (values[item] = true));
         }
+        delete values['recommend'];
         if (ifPromote) {
             values.promoteStartTime = values.promoteTime[0].format('YYYY-MM-DD HH:mm:ss');
             values.promoteEndTime = values.promoteTime[1].format('YYYY-MM-DD HH:mm:ss');
             delete values['promoteTime'];
         }
-        console.log('Received values of form: ', values);
         this.props.dispatch({
           type: 'goods/save',
           payload: values,
-          callback: () => this.props.dispatch(routerRedux.push('goods'))
+          callback: () => this.props.dispatch(routerRedux.push('goods')),
         });
 
       }
@@ -308,7 +308,7 @@ class GoodsAdd extends React.Component {
                   })(<Switch />)}
                 </FormItem>
                 <FormItem label="商品关键字" {...formItemLayout}>
-                  {getFieldDecorator('keyWords')(
+                  {getFieldDecorator('keywords')(
                     <Input placeholder="请输入关键字, 使用英文逗号分隔" />
                   )}
                 </FormItem>

@@ -55,13 +55,14 @@ export default {
         payload: response.data,
       });
     },
-    *fetchOne({ payload }, { call, put }) {
+    *fetchOne({ payload, callback }, { call, put }) {
       const response = yield call(findGoodsOne, payload);
       if (response.code === 500) return message.error(response.msg);
       yield put({
         type: 'queryOne',
         payload: response.data,
       });
+      if (callback) callback();
     },
     *save({ payload, callback }, { call }) {
       const response = yield call(saveGoods, payload);

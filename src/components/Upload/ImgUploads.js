@@ -13,18 +13,21 @@ export default class ImgUploads extends React.Component {
   };
 
   componentDidMount() {
-    /*if (this.props.value) {
+    console.log("dis", this.props);
+    if (this.props.value) {
       this.setState({
-        fileList: [
-          {
-            uid: -1,
-            name: 'xxx.png',
-            status: 'done',
-            url: this.props.value,
-          },
-        ],
+        fileList: this.props.value,
       });
-    }*/
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    console.log("nextProps", this.props);
+    if( !nextProps.value || (nextProps.value && nextProps.value.length==0)){
+      this.setState({
+        fileList: [],
+      })
+    }
   }
 
   /*componentWillReceiveProps(nextProps) {
@@ -75,12 +78,21 @@ export default class ImgUploads extends React.Component {
   };
 
   handleChange = ({ file, fileList }) => {
+    console.log("fileList", fileList);
     this.setState({ fileList });
     if (file.status === 'done') {
       const imgUrls = [];
       fileList.forEach(item => {
-        if (item.response && !imgUrls.includes(item.response.msg)) {
-          imgUrls.push(item.response.msg);
+        if (item.url && item.status !== 'removed') {
+          imgUrls.push({
+            url: item.url,
+            response: item,
+          });
+        } else if (item.response && !imgUrls.includes(item.response.msg)) {
+          imgUrls.push({
+            url: item.response.msg,
+            response: item.response,
+          });
         }
       });
       this.props.onChange(imgUrls);

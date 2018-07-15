@@ -14,6 +14,7 @@ import {
   Switch,
   TreeSelect,
 } from 'antd';
+import moment from 'moment';
 import LzEditor from 'react-lz-editor';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import { getUserId } from '../../utils/global';
@@ -26,6 +27,7 @@ const Option = Select.Option;
 const CheckboxGroup = Checkbox.Group;
 const TextArea = Input.TextArea;
 const TabPane = Tabs.TabPane;
+const dateFormat = 'YYYY-MM-DD HH:mm:ss';
 
 const formItemLayout = {
   labelCol: {
@@ -55,19 +57,8 @@ class GoodsAdd extends React.Component {
   }
 
   componentDidMount() {
-    console.log(this.props);
-    const goodsId = this.props.match.params.goodsId;
-    // 查询商品详情
-    if (goodsId) {
-      this.props.dispatch({
-        type: 'goods/fetchOne',
-        payload: { userId: this.state.userId, id:goodsId},
-        callback: () => {
-          const { goods: { goods }, form } = this.props;
-          form.setFieldsValue(goods);
-        }
-      });
-    }
+    const that = this;
+    const { goodsId } = this.props.match.params;
     // 查询分类列表
     this.props.dispatch({
       type: 'goods/fetchCategory',
@@ -84,18 +75,77 @@ class GoodsAdd extends React.Component {
       type: 'goods/fetchSupplier',
       payload: { userId: this.state.userId },
     });
+    // 查询商品详情
+    if (goodsId) {
+      this.props.dispatch({
+        type: 'goods/fetchOne',
+        payload: { userId: this.state.userId, id:goodsId},
+        callback: () => {
+          const { goods: { goods: goodsDesc }, form } = this.props;
+
+          const defaultRecommendOptions = [];
+          if (goodsDesc.ifBest) defaultRecommendOptions.push('ifBest');
+          if (goodsDesc.ifNew) defaultRecommendOptions.push('ifNew');
+          if (goodsDesc.ifHot) defaultRecommendOptions.push('ifHot');
+
+          // 商品图册
+          const { galleryList } = goodsDesc;
+          const otherImgValues = [];
+          if (galleryList != null && galleryList.length > 0) {
+            galleryList.forEach((item, index) => {
+              otherImgValues.push({uid: index, url: item.originalUrl, status: 'done'})
+            })
+          }
+          that.setState({
+            isPromote: goodsDesc.ifPromote,
+            weightUnit: goodsDesc.goodsWeightUnit,
+            markdownContent: goodsDesc.goodsDesc,
+          }, () => {
+            form.setFieldsValue({
+              id: goodsDesc.id,
+              goodsName: goodsDesc.goodsName,
+              goodsImg: goodsDesc.goodsImg,
+              goodsSn: goodsDesc.goodsSn,
+              categoryId: goodsDesc.categoryId.toString(),
+              brandId: goodsDesc.brandId,
+              supplierId: goodsDesc.supplierId,
+              shopPrice: goodsDesc.shopPrice,
+              marketPrice: goodsDesc.marketPrice,
+              ifPromote: goodsDesc.ifPromote,
+              promotePrice: goodsDesc.promotePrice,
+              promoteTime: [moment(goodsDesc.promoteStartTime, dateFormat), moment(goodsDesc.promoteEndTime, dateFormat)],
+              goodsDesc: goodsDesc.goodsDesc,
+              goodsWeight: goodsDesc.goodsWeight,
+              goodsWeightUnit: goodsDesc.goodsWeightUnit,
+              goodsNumber: goodsDesc.goodsNumber,
+              warnNumber: goodsDesc.warnNumber,
+              recommend: defaultRecommendOptions,
+              ifBest: goodsDesc.ifBest,
+              ifNew: goodsDesc.ifNew,
+              ifHot: goodsDesc.ifHot,
+              ifOnSale: goodsDesc.ifOnSale,
+              noFreight: goodsDesc.noFreight,
+              keywords: goodsDesc.keywords,
+              goodsBrief: goodsDesc.goodsBrief,
+              ownerRemark: goodsDesc.ownerRemark,
+              goodsOtherImg: otherImgValues,
+            });
+          });
+        },
+      });
+    }
   }
 
   formatTreeSelect = () => {
-    let data = this.props.goods.categoryList;
+    const list = this.props.goods.categoryList;
     function format(data) {
       let treeData = [];
-      data.map((item, index) => {
+      data.forEach((item, index) => {
         if (item.status === 0) return false;
         const obj = {};
         obj.label = item.name;
         obj.value = item.id.toString();
-        obj.key = item.key.toString();
+        obj.key = item.key;
         if (item.children) {
           obj.children = format(item.children);
         }
@@ -103,7 +153,7 @@ class GoodsAdd extends React.Component {
       });
       return treeData;
     }
-    const categoryTreeData = format(data);
+    const categoryTreeData = format(list);
     this.setState({ categoryTreeData });
   };
 
@@ -118,6 +168,8 @@ class GoodsAdd extends React.Component {
   handleSubmit = () => {
     this.props.form.validateFields((err, values) => {
       if (!err) {
+        console.log('Received values of form: ', values);
+        return;
         values.goodsWeightUnit = this.state.weightUnit;
         values.userId = this.state.userId;
 
@@ -125,17 +177,18 @@ class GoodsAdd extends React.Component {
         if (recommend && recommend.length > 0) {
           recommend.forEach(item => (values[item] = true));
         }
+        delete values['recommend'];
         if (ifPromote) {
             values.promoteStartTime = values.promoteTime[0].format('YYYY-MM-DD HH:mm:ss');
             values.promoteEndTime = values.promoteTime[1].format('YYYY-MM-DD HH:mm:ss');
             delete values['promoteTime'];
         }
-        console.log('Received values of form: ', values);
-        this.props.dispatch({
+
+        /*this.props.dispatch({
           type: 'goods/save',
           payload: values,
-          callback: () => this.props.dispatch(routerRedux.push('goods'))
-        });
+          callback: () => this.props.dispatch(routerRedux.push('/goods/goods')),
+        });*/
 
       }
     });
@@ -165,13 +218,13 @@ class GoodsAdd extends React.Component {
       </Select>
     );
     const recommendOptions = [
-      { label: '精品', value: 'ifBest' },
+      { label: '精品', value: 'ifBest'},
       { label: '新品', value: 'ifNew' },
       { label: '热销', value: 'ifHot' },
     ];
     return (
       <PageHeaderLayout>
-        <Card bordered={false}>
+        <Card bordered={false} loading={loading}>
           <Form>
             <Tabs tabBarExtraContent={operations}>
               <TabPane tab="通用信息" key="1">
@@ -185,7 +238,6 @@ class GoodsAdd extends React.Component {
                 <FormItem label="商品主图" {...formItemLayout}>
                   {getFieldDecorator('goodsImg', {
                     rules: [{ required: true, message: '请上传商品图片', whitespace: true }],
-                    initialValue: this.state.currBrandLogo,
                     getValueFromEvent: res => {
                       return res.msg;
                     },
@@ -251,7 +303,9 @@ class GoodsAdd extends React.Component {
                   <span className="ant-form-text"> 元</span>
                 </FormItem>
                 <FormItem label="是否促销" {...formItemLayout}>
-                  {getFieldDecorator('ifPromote')(
+                  {getFieldDecorator('ifPromote', {
+                    valuePropName: 'checked',
+                  })(
                     <Switch onChange={isPromote => this.setState({ isPromote })} />
                   )}
                 </FormItem>
@@ -267,7 +321,7 @@ class GoodsAdd extends React.Component {
                     <FormItem label="促销日期" {...formItemLayout}>
                       {getFieldDecorator('promoteTime', {
                         rules: [{ required: true, message: '请选择促销日期' }],
-                      })(<RangePicker showTime format="YYYY-MM-DD HH:mm:ss" />)}
+                      })(<RangePicker showTime format={dateFormat} />)}
                     </FormItem>
                   </div>
                 ) : (
@@ -288,20 +342,18 @@ class GoodsAdd extends React.Component {
               <TabPane tab="其他信息" key="3">
                 <FormItem label="商品重量" {...formItemLayout}>
                   {getFieldDecorator('goodsWeight', {
-                    rules: [{ required: true, message: '请填写商品重量', whitespace: true }],
+                    rules: [{ required: true, message: '请填写商品重量'}],
                   })(<Input addonAfter={selectUnitAfter} autoComplete="off" />)}
                 </FormItem>
                 <FormItem label="商品库存数量" {...formItemLayout}>
                   {getFieldDecorator('goodsNumber', {
                     rules: [{ required: true, message: '请填写商品库存数量' }],
-                    initialValue: 0.0,
                   })(<InputNumber min={0} />)}
                   <span className="ant-form-text"> 件</span>
                 </FormItem>
                 <FormItem label="库存警告数量" {...formItemLayout}>
                   {getFieldDecorator('warnNumber', {
                     rules: [{ required: true, message: '请填写库存警告数量' }],
-                    initialValue: 10,
                   })(<InputNumber min={0} />)}
                   <span className="ant-form-text"> 件</span>
                 </FormItem>
@@ -311,17 +363,15 @@ class GoodsAdd extends React.Component {
                 <FormItem label="上架" {...formItemLayout}>
                   {getFieldDecorator('ifOnSale', {
                     valuePropName: 'checked',
-                    initialValue: true,
                   })(<Switch />)}
                 </FormItem>
                 <FormItem label="是否免运费" {...formItemLayout}>
                   {getFieldDecorator('noFreight', {
                     valuePropName: 'checked',
-                    initialValue: true,
                   })(<Switch />)}
                 </FormItem>
                 <FormItem label="商品关键字" {...formItemLayout}>
-                  {getFieldDecorator('keyWords')(
+                  {getFieldDecorator('keywords')(
                     <Input placeholder="请输入关键字, 使用英文逗号分隔" />
                   )}
                 </FormItem>
@@ -335,7 +385,9 @@ class GoodsAdd extends React.Component {
               <TabPane tab="商品相册" key="4">
                 {getFieldDecorator('goodsOtherImg', {
                   getValueFromEvent: res => {
-                    return res;
+                    const result = [];
+                    res.forEach(item => result.push(item.url));
+                    return result;
                   },
                 })(<ImgUploads />)}
               </TabPane>
