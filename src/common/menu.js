@@ -58,6 +58,10 @@ const menuData = [
         name: '商品供应商',
         path: 'supplier',
       },
+      {
+        name: '商品回收站',
+        path: 'trash',
+      },
     ],
   },
   {

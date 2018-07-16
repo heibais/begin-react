@@ -44,7 +44,7 @@ const formItemLayout = {
   loading: loading.models.goods,
 }))
 @Form.create()
-class GoodsAdd extends React.Component {
+class GoodsEdit extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -79,7 +79,7 @@ class GoodsAdd extends React.Component {
     if (goodsId) {
       this.props.dispatch({
         type: 'goods/fetchOne',
-        payload: { userId: this.state.userId, id:goodsId},
+        payload: { userId: this.state.userId, id: goodsId },
         callback: () => {
           const { goods: { goods: goodsDesc }, form } = this.props;
 
@@ -92,45 +92,55 @@ class GoodsAdd extends React.Component {
           const { galleryList } = goodsDesc;
           const otherImgValues = [];
           if (galleryList != null && galleryList.length > 0) {
-            galleryList.forEach((item, index) => {
-              otherImgValues.push({uid: index, url: item.originalUrl, status: 'done'})
-            })
+            galleryList.forEach(item => otherImgValues.push(item.originalUrl));
           }
-          that.setState({
-            isPromote: goodsDesc.ifPromote,
-            weightUnit: goodsDesc.goodsWeightUnit,
-            markdownContent: goodsDesc.goodsDesc,
-          }, () => {
-            form.setFieldsValue({
-              id: goodsDesc.id,
-              goodsName: goodsDesc.goodsName,
-              goodsImg: goodsDesc.goodsImg,
-              goodsSn: goodsDesc.goodsSn,
-              categoryId: goodsDesc.categoryId.toString(),
-              brandId: goodsDesc.brandId,
-              supplierId: goodsDesc.supplierId,
-              shopPrice: goodsDesc.shopPrice,
-              marketPrice: goodsDesc.marketPrice,
-              ifPromote: goodsDesc.ifPromote,
-              promotePrice: goodsDesc.promotePrice,
-              promoteTime: [moment(goodsDesc.promoteStartTime, dateFormat), moment(goodsDesc.promoteEndTime, dateFormat)],
-              goodsDesc: goodsDesc.goodsDesc,
-              goodsWeight: goodsDesc.goodsWeight,
-              goodsWeightUnit: goodsDesc.goodsWeightUnit,
-              goodsNumber: goodsDesc.goodsNumber,
-              warnNumber: goodsDesc.warnNumber,
-              recommend: defaultRecommendOptions,
-              ifBest: goodsDesc.ifBest,
-              ifNew: goodsDesc.ifNew,
-              ifHot: goodsDesc.ifHot,
-              ifOnSale: goodsDesc.ifOnSale,
-              noFreight: goodsDesc.noFreight,
-              keywords: goodsDesc.keywords,
-              goodsBrief: goodsDesc.goodsBrief,
-              ownerRemark: goodsDesc.ownerRemark,
-              goodsOtherImg: otherImgValues,
-            });
-          });
+
+          const formData = {
+            id: goodsDesc.id,
+            goodsName: goodsDesc.goodsName,
+            goodsImg: goodsDesc.goodsImg,
+            goodsSn: goodsDesc.goodsSn,
+            categoryId: goodsDesc.categoryId.toString(),
+            brandId: goodsDesc.brandId,
+            supplierId: goodsDesc.supplierId,
+            shopPrice: goodsDesc.shopPrice,
+            marketPrice: goodsDesc.marketPrice,
+            ifPromote: goodsDesc.ifPromote,
+            goodsDesc: goodsDesc.goodsDesc,
+            goodsWeight: goodsDesc.goodsWeight,
+            goodsWeightUnit: goodsDesc.goodsWeightUnit,
+            goodsNumber: goodsDesc.goodsNumber,
+            warnNumber: goodsDesc.warnNumber,
+            recommend: defaultRecommendOptions,
+            ifBest: goodsDesc.ifBest,
+            ifNew: goodsDesc.ifNew,
+            ifHot: goodsDesc.ifHot,
+            ifOnSale: goodsDesc.ifOnSale,
+            noFreight: goodsDesc.noFreight,
+            keywords: goodsDesc.keywords,
+            goodsBrief: goodsDesc.goodsBrief,
+            ownerRemark: goodsDesc.ownerRemark,
+            goodsOtherImg: otherImgValues,
+          };
+
+          if (goodsDesc.ifPromote) {
+            formData.promoteTime = [
+              moment(goodsDesc.promoteStartTime, dateFormat),
+              moment(goodsDesc.promoteEndTime, dateFormat),
+            ];
+            formData.promotePrice = goodsDesc.promotePrice;
+          }
+
+          that.setState(
+            {
+              isPromote: goodsDesc.ifPromote,
+              weightUnit: goodsDesc.goodsWeightUnit,
+              markdownContent: goodsDesc.goodsDesc,
+            },
+            () => {
+              form.setFieldsValue(formData);
+            }
+          );
         },
       });
     }
@@ -161,15 +171,14 @@ class GoodsAdd extends React.Component {
     this.props.form.setFieldsValue({ goodsDesc: content });
   };
 
-  handleChangeWeightUnit = (target) => {
-    this.setState({weightUnit: target});
+  handleChangeWeightUnit = target => {
+    this.setState({ weightUnit: target });
   };
 
   handleSubmit = () => {
     this.props.form.validateFields((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values);
-        return;
         values.goodsWeightUnit = this.state.weightUnit;
         values.userId = this.state.userId;
 
@@ -179,17 +188,16 @@ class GoodsAdd extends React.Component {
         }
         delete values['recommend'];
         if (ifPromote) {
-            values.promoteStartTime = values.promoteTime[0].format('YYYY-MM-DD HH:mm:ss');
-            values.promoteEndTime = values.promoteTime[1].format('YYYY-MM-DD HH:mm:ss');
-            delete values['promoteTime'];
+          values.promoteStartTime = values.promoteTime[0].format('YYYY-MM-DD HH:mm:ss');
+          values.promoteEndTime = values.promoteTime[1].format('YYYY-MM-DD HH:mm:ss');
+          delete values['promoteTime'];
         }
 
-        /*this.props.dispatch({
+        this.props.dispatch({
           type: 'goods/save',
           payload: values,
           callback: () => this.props.dispatch(routerRedux.push('/goods/goods')),
-        });*/
-
+        });
       }
     });
   };
@@ -212,13 +220,17 @@ class GoodsAdd extends React.Component {
       </div>
     );
     const selectUnitAfter = (
-      <Select value={this.state.weightUnit} onChange={(target) => this.handleChangeWeightUnit(target)} style={{ width: 80 }}>
+      <Select
+        value={this.state.weightUnit}
+        onChange={target => this.handleChangeWeightUnit(target)}
+        style={{ width: 80 }}
+      >
         <Option value="KG">千克</Option>
         <Option value="G">克</Option>
       </Select>
     );
     const recommendOptions = [
-      { label: '精品', value: 'ifBest'},
+      { label: '精品', value: 'ifBest' },
       { label: '新品', value: 'ifNew' },
       { label: '热销', value: 'ifHot' },
     ];
@@ -305,9 +317,7 @@ class GoodsAdd extends React.Component {
                 <FormItem label="是否促销" {...formItemLayout}>
                   {getFieldDecorator('ifPromote', {
                     valuePropName: 'checked',
-                  })(
-                    <Switch onChange={isPromote => this.setState({ isPromote })} />
-                  )}
+                  })(<Switch onChange={isPromote => this.setState({ isPromote })} />)}
                 </FormItem>
                 {this.state.isPromote ? (
                   <div>
@@ -342,7 +352,7 @@ class GoodsAdd extends React.Component {
               <TabPane tab="其他信息" key="3">
                 <FormItem label="商品重量" {...formItemLayout}>
                   {getFieldDecorator('goodsWeight', {
-                    rules: [{ required: true, message: '请填写商品重量'}],
+                    rules: [{ required: true, message: '请填写商品重量' }],
                   })(<Input addonAfter={selectUnitAfter} autoComplete="off" />)}
                 </FormItem>
                 <FormItem label="商品库存数量" {...formItemLayout}>
@@ -385,9 +395,7 @@ class GoodsAdd extends React.Component {
               <TabPane tab="商品相册" key="4">
                 {getFieldDecorator('goodsOtherImg', {
                   getValueFromEvent: res => {
-                    const result = [];
-                    res.forEach(item => result.push(item.url));
-                    return result;
+                    return res;
                   },
                 })(<ImgUploads />)}
               </TabPane>
@@ -399,4 +407,4 @@ class GoodsAdd extends React.Component {
   }
 }
 
-export default GoodsAdd;
+export default GoodsEdit;

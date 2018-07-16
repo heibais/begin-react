@@ -13,49 +13,22 @@ export default class ImgUploads extends React.Component {
   };
 
   componentDidMount() {
-    console.log("dis", this.props);
     if (this.props.value) {
-      this.setState({
-        fileList: this.props.value,
+      const fileList = [];
+      this.props.value.forEach((item, index) => {
+        fileList.push({ uid: index, url: item, status: 'done' });
       });
+      this.setState({ fileList });
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log("nextProps", this.props);
-    if( !nextProps.value || (nextProps.value && nextProps.value.length==0)){
+    if (!nextProps.value || (nextProps.value && nextProps.value.length === 0)) {
       this.setState({
         fileList: [],
-      })
+      });
     }
   }
-
-  /*componentWillReceiveProps(nextProps) {
-    if (
-      (nextProps.value && this.state.fileList.length === 0) ||
-      (nextProps.value &&
-        this.state.fileList[0].url &&
-        this.state.fileList[0].url !== nextProps.value) ||
-      (nextProps.value &&
-        this.state.fileList[0].response &&
-        this.state.fileList[0].response.msg !== nextProps.value)
-    ) {
-      this.setState({
-        fileList: [
-          {
-            uid: -1,
-            name: 'xxx.png',
-            status: 'done',
-            url: nextProps.value,
-          },
-        ],
-      });
-    } else if (!nextProps.value) {
-      this.setState({
-        fileList: [],
-      });
-    }
-  }*/
 
   handleBefore = file => {
     const isLt1M = file.size / 1024 / 1024 < 1;
@@ -78,21 +51,14 @@ export default class ImgUploads extends React.Component {
   };
 
   handleChange = ({ file, fileList }) => {
-    console.log("fileList", fileList);
     this.setState({ fileList });
-    if (file.status === 'done') {
+    if (file.status === 'done' || file.status === 'removed') {
       const imgUrls = [];
       fileList.forEach(item => {
         if (item.url && item.status !== 'removed') {
-          imgUrls.push({
-            url: item.url,
-            response: item,
-          });
+          imgUrls.push(item.url);
         } else if (item.response && !imgUrls.includes(item.response.msg)) {
-          imgUrls.push({
-            url: item.response.msg,
-            response: item.response,
-          });
+          imgUrls.push(item.response.msg);
         }
       });
       this.props.onChange(imgUrls);
