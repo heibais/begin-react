@@ -7,7 +7,8 @@ import {
   findGoodsOne,
   saveGoods,
   removeGoods,
-  changeGoodsStatus
+  changeGoodsStatus,
+  findGoodsTrashList,
 } from '../../services/admin';
 
 export default {
@@ -15,6 +16,7 @@ export default {
 
   state: {
     data: {},
+    trashData: {},
     goods: {},
     brandList: [],
     supplierList: [],
@@ -52,6 +54,14 @@ export default {
       if (response.code === 500) return message.error(response.msg);
       yield put({
         type: 'queryList',
+        payload: response.data,
+      });
+    },
+    *fetchTrash({ payload }, { call, put }) {
+      const response = yield call(findGoodsTrashList, payload);
+      if (response.code === 500) return message.error(response.msg);
+      yield put({
+        type: 'queryTrashList',
         payload: response.data,
       });
     },
@@ -115,6 +125,21 @@ export default {
       return {
         ...state,
         data,
+      };
+    },
+    queryTrashList(state, action) {
+      const result = action.payload;
+      const trashData = {
+        list: result.records,
+        pagination: {
+          total: result.total,
+          pageSize: result.size,
+          current: result.current,
+        },
+      };
+      return {
+        ...state,
+        trashData,
       };
     },
     queryOne(state, action) {

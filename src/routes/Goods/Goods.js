@@ -128,6 +128,14 @@ class Goods extends React.Component {
     });
   };
 
+  handleDelete = record => {
+    this.props.dispatch({
+      type: 'goods/remove',
+      payload: { id: record.id, userId: this.state.userId},
+      callback: this.fetchData,
+    });
+  };
+
   handleSelectRows = rows => {
     this.setState({ selectedRows: rows });
   };
@@ -263,8 +271,17 @@ class Goods extends React.Component {
             </Button>
             <Divider type="vertical" />
             <Popconfirm
-              title="你确定要删除吗？"
+              title="你确定要加入回收站吗？"
               onConfirm={() => this.handleChangeStatus(record, 'DELETE')}
+            >
+              <Button type="default" size="small">
+                回收站
+              </Button>
+            </Popconfirm>
+            <Divider type="vertical" />
+            <Popconfirm
+              title="你确定要删除吗？"
+              onConfirm={() => this.handleDelete(record)}
             >
               <Button type="danger" size="small">
                 删除
@@ -304,6 +321,11 @@ class Goods extends React.Component {
                 </Dropdown>
               </span>
             )}
+
+            <Button.Group style={{float: 'right'}}>
+              <Button type="default">导入</Button>
+              <Button type="default">导出</Button>
+            </Button.Group>
           </div>
           <StandardTable
             loading={loading}

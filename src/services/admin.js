@@ -169,6 +169,9 @@ export async function changeSupplierStatus(param) {
 export async function findGoodsList(param) {
   return request(`${prefix}/shop/${param.userId}/goods?${stringify(param)}`);
 }
+export async function findGoodsTrashList(param) {
+  return request(`${prefix}/shop/${param.userId}/goods/trash?${stringify(param)}`);
+}
 export async function findGoodsOne(param) {
   return request(`${prefix}/shop/${param.userId}/goods/${param.id}`);
 }
